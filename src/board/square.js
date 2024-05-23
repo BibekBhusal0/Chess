@@ -1,7 +1,26 @@
 import { useContext } from "react";
-import { ThemeContext } from "../App";
+import { Context } from "../App";
 
-export const classes = ["bg-wood-light", "bg-wood-dark"];
+export const classes = [
+  "bg-wood-light",
+  "bg-wood-dark",
+  "bg-dash-light",
+  "bg-dash-dark",
+  "bg-defult-light",
+  "bg-defult-dark",
+  "bg-crazy-light",
+  "bg-crazy-dark",
+  "bg-cosmos-light",
+  "bg-cosmos-dark",
+  "bg-icy-sea-light",
+  "bg-icy-sea-dark",
+  "bg-ocen-light",
+  "bg-ocen-dark",
+  "bg-nature-light",
+  "bg-nature-dark",
+  "bg-glass-light",
+  "bg-glass-dark",
+];
 
 export const piece_names = {
   p: "pawn",
@@ -18,34 +37,48 @@ const c = {
 };
 
 function get_color(light, theme) {
-  return `bg-${theme}-${light ? "light" : "dark"}`;
+  return `bg-${theme}-${light ? "light" : "dark"}`.toLowerCase();
 }
 
-function get_piece(piece, theme) {
-  const color = piece === piece.toUpperCase() ? "w" : "b";
-
-  if (piece !== " ") {
-    // const path = `$/Images/pices/wood/${color}${piece.toLowerCase()}.png`;
-    // console.log(path);
-    return (
-      <div className="">
-        <img
-          src={`${
-            process.env.PUBLIC_URL
-          }/Images/pieces/${theme}/${color}${piece.toLowerCase()}.png`}
-          alt={`${c[color]} ${piece_names[piece.toLowerCase()]}`}
-        />
-      </div>
-    );
-  }
-}
-
-function Square({ piece, light }) {
-  const { theme } = useContext(ThemeContext);
-  //   console.log(get_piece(piece));
+function PieceImg({ piece }) {
+  const {
+    state: { theme },
+    dispatch,
+  } = useContext(Context);
+  const path = `${process.env.PUBLIC_URL}/Images/pieces/${theme}/${
+    piece.color
+  }${piece.piece.toLowerCase()}.png`;
   return (
-    <div className={` aspect-square w-full ${get_color(light, theme)} `}>
-      {get_piece(piece, theme)}
+    <img
+      onAbort={dispatch({ type: "ShowMoves", piece: piece })}
+      onClick={dispatch({ type: "ShowMoves", piece: piece })}
+      src={path}
+      className="hover:scale-105 transition-all"
+      alt={`${c[piece.color]} ${piece_names[piece.piece.toLowerCase()]}`}
+    />
+  );
+}
+
+function LegalMove() {
+  return (
+    <div className="flex">
+      <div className=" w-1/4 aspect-square opacity-65 bg-red-600 absolute top-2/4 -translate-y-1/2 left-1/2 -translate-x-1/2 rounded-full hover:w-3/4 hover:rounded-2xl hover:opacity-80 transition-all "></div>
+    </div>
+  );
+}
+
+function Square({ piece }) {
+  const {
+    state: { theme, show_legal_moves },
+  } = useContext(Context);
+  return (
+    <div
+      className={`aspect-square relative w-full grid ${get_color(
+        piece.light_square,
+        theme
+      )}  `}>
+      {!piece.empty && <PieceImg piece={piece}></PieceImg>}
+      {piece.showing_legal && show_legal_moves && <LegalMove></LegalMove>}
     </div>
   );
 }

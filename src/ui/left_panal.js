@@ -1,21 +1,29 @@
+import { useContext } from "react";
+import Selection from "./select";
+import { Context, all_themes } from "../App";
+
 function LeftPanel() {
+  const {
+    state: { theme, depth },
+    dispatch,
+  } = useContext(Context);
   return (
     <div className=" col-span-2 pr-3 border-r-8">
       <div className=" text-xl pb-11">
         Just sample left panel work no ready yet
       </div>
-      <div>color</div>
-      <div className=" border-b-4 pb-5">theme</div>
+      <Selection
+        title={"Theme"}
+        options={all_themes}
+        setValue={(val) => dispatch({ type: "setTheme", theme: val })}
+        Val={theme}></Selection>
       <div className=" text-lg"> stockfish settings</div>
       <div className="flex">
-        <div> depth </div>
-        <input
-          type="number"
-          name="number"
-          id="number"
-          value={4}
-          className="  bg-red-100"
-        />
+        <Selection
+          title={"Depth"}
+          options={[15, 14, 13, 12, 11, 10]}
+          setValue={(val) => dispatch({ type: "setDepth", depth: val })}
+          Val={depth}></Selection>
       </div>
     </div>
   );
