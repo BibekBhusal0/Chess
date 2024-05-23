@@ -1,6 +1,6 @@
 import { useContext } from "react";
 import { AppContext } from "../App";
-import { BoardContext } from ".";
+import { BoardContext } from "../App";
 
 export const classes = [
   "bg-wood-light",
@@ -68,10 +68,10 @@ function Square({ piece }) {
   const { theme } = useContext(AppContext);
   const { ShowLegalMoves } = useContext(AppContext);
   const handle_click = () => {
-    if (piece.empty) {
+    if (piece.showing_legal) {
+      dispatch({ type: "MakeMove", piece: piece });
+    } else if (piece.empty) {
       dispatch({ type: "HideMoves" });
-    } else if (piece.showing_legal) {
-      dispatch({ type: "MakeMove", peice: piece });
     } else {
       dispatch({ type: "ShowMoves", piece: piece });
     }

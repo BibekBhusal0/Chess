@@ -19,7 +19,7 @@ function LeftPanel() {
     setHighlightMoves,
   } = useContext(AppContext);
   return (
-    <div className=" col-span-2 pr-3 border-r-8">
+    <div className=" col-span-3 pr-3 border-r-8">
       <div className=" text-xl pb-11">
         Just sample left panel work no ready yet
       </div>

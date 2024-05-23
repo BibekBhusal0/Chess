@@ -1,10 +1,10 @@
-import { get_rook_move, hide_legal_moves } from "./moves";
+import { hide_legal_moves, make_move, show_legal_moves } from "./moves";
 
 const sq_n = "abcdefgh".split("");
 // const initialFen =
 //   "rnbqkbnr/pppppppp/--------/--------/--------/--------/PPPPPPPP/RNBQKBNR";
 const initialFen =
-  "rrrrrrrr/--------/--------/--------/--------/--------/--------/RRRRRRRR";
+  "rrrrbbbb/-----n--/---q----/--------/--------/--------/---QN---/RRRRBBBB";
 
 const notations = ["12345678".split(""), "abcdefgh".split("")];
 
@@ -43,26 +43,37 @@ function complete_board(fen) {
       board[i][j] = {
         piece: piece,
         empty: piece === "-",
-        // highlight: false,
-        // check: false,
+        highlight: false,
+        check: false,
         color: piece === piece.toUpperCase() ? "w" : "b",
         square: { x: i, y: j },
-        noatation: `${sq_n[i]}${j + 1}`,
+        noatation: `${sq_n[j]}${i + 1}`,
         light_square: i % 2 === j % 2,
         showing_legal: false,
-        clickek: false,
+        clicked: false,
       };
     }
   }
   return board;
 }
+function cb2stockfish_fen(board) {
+  const fen = [];
+  for (var i = 0; i < 8; i++) {
+    for (var j = 0; j < 8; j++) {
+      fen.push(board[i][j].piece);
+    }
+    if (i !== 7) {
+      fen.push("/");
+    }
+  }
+  return stockfish_fen(fen2board(fen.join("")));
+}
 
 const initialBoard = fen2board(initialFen);
-console.log(complete_board(initialFen));
+cb2stockfish_fen(complete_board(initialFen));
 const initialState = {
-  board: initialBoard,
   stockfish_fen: stockfish_fen(initialBoard),
-  complete_board: complete_board(initialFen),
+  board: complete_board(initialFen),
   notations: notations,
   move: "w",
   white_bottom: true,
@@ -73,25 +84,21 @@ function reducer(state, action) {
   switch (action.type) {
     case "ShowMoves":
       const piece = action.piece;
-      var board = [...state.complete_board];
+      var board = [...state.board];
       if (!state.game_over && piece.color === state.move) {
         hide_legal_moves(board);
-        switch (piece.piece.toUpperCase()) {
-          case "R":
-            var moves = get_rook_move(board, piece.square.x, piece.square.y);
-            for (var i = 0; i < moves.length; i++) {
-              var c = moves[i];
-              board[c[0]][c[1]].showing_legal = true;
-            }
-            return { ...state, complete_board: board };
-        }
+        board = show_legal_moves(board, piece);
+        return { ...state, board: board };
       }
-      return { ...state };
-
+      return state;
     case "HideMoves":
-      board = hide_legal_moves([...state.complete_board]);
-      return { ...state, complete_board: board };
-
+      board = hide_legal_moves([...state.board]);
+      return { ...state, board: board };
+    case "MakeMove":
+      board = make_move([...state.board], action.piece.square);
+      const sf = cb2stockfish_fen(board);
+      const move = state.move === "w" ? "b" : "w";
+      return { ...state, board: board, stockfish_fen: sf, move: move };
     default:
       return state;
   }

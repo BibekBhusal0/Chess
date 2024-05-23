@@ -1,7 +1,6 @@
-import { createContext, useContext, useReducer } from "react";
+import { useContext } from "react";
 import Square from "./square";
-import { initialState, reducer } from "./reducers";
-import { AppContext } from "../App";
+import { AppContext, BoardContext } from "../App";
 
 function Rank({ pieces }) {
   return (
@@ -31,29 +30,18 @@ function Notation({ horizontal }) {
   );
 }
 
-export const BoardContext = createContext();
-
 function ChessBoard() {
-  const [state, dispatch] = useReducer(reducer, initialState);
-  return (
-    <BoardContext.Provider value={{ state, dispatch }}>
-      <BoardNE />
-    </BoardContext.Provider>
-  );
-}
-
-function BoardNE() {
   const { ShowEval, ShowNotation } = useContext(AppContext);
   const {
-    state: { complete_board },
+    state: { board },
   } = useContext(BoardContext);
   return (
-    <div className="col-span-8">
+    <div className="col-span-4">
       <div className="flex">
         {ShowEval && <div></div>}
         {ShowNotation && <Notation horizontal={false} />}
         <div className="p-2">
-          {complete_board.map((pieces, index) => (
+          {board.map((pieces, index) => (
             <Rank key={index} pieces={pieces} />
           ))}
         </div>

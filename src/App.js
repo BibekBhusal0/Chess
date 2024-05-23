@@ -1,7 +1,8 @@
-import { createContext, useState } from "react";
+import { createContext, useState, useReducer } from "react";
 import ChessBoard from "./board";
 import LeftPanel from "./ui/left_panal";
 import RightPanel from "./ui/right_panel";
+import { initialState, reducer } from "./board/reducers";
 
 // const api = "https://stockfish.online/api/s/v2.php";
 // var fen = "rn1q1rk1/pp2b1pp/2p2n2/3p1pB1/3P4/1QP2N2/PP1N1PPP/R4RK1 b - - 1 11";
@@ -20,8 +21,10 @@ export const all_themes = [
   "Ocen",
 ];
 export const AppContext = createContext();
+export const BoardContext = createContext();
 
 function App() {
+  const [state, dispatch] = useReducer(reducer, initialState);
   const [depth, setDepth] = useState(15);
   const [theme, setTheme] = useState("wood");
   const [ShowEval, setShowEval] = useState(false);
@@ -48,8 +51,10 @@ function App() {
       {/* header if i keep it */}
       <div className="grid grid-cols-10 p-3 gap-3">
         <LeftPanel />
-        <ChessBoard />
-        {/* <RightPanel /> */}
+        <BoardContext.Provider value={{ state, dispatch }}>
+          <ChessBoard />
+          <RightPanel />
+        </BoardContext.Provider>
       </div>
       {/* footer */}
     </AppContext.Provider>
