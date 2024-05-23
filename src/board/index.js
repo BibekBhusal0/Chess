@@ -1,6 +1,7 @@
-import { useContext } from "react";
+import { createContext, useContext, useReducer } from "react";
 import Square from "./square";
-import { Context } from "../App";
+import { initialState, reducer } from "./reducers";
+import { AppContext } from "../App";
 
 function Rank({ pieces }) {
   return (
@@ -13,7 +14,10 @@ function Rank({ pieces }) {
 }
 
 function Notation({ horizontal }) {
-  const list = horizontal ? "abcdefgh".split("") : "12345678".split("");
+  const {
+    state: { notations },
+  } = useContext(BoardContext);
+  const list = horizontal ? notations[1] : notations[0];
   const c = horizontal ? "w-full" : "h-full";
   const direction = horizontal ? "flex-row text-center" : "flex-col pt-2";
   return (
@@ -27,22 +31,34 @@ function Notation({ horizontal }) {
   );
 }
 
+export const BoardContext = createContext();
+
 function ChessBoard() {
+  const [state, dispatch] = useReducer(reducer, initialState);
+  return (
+    <BoardContext.Provider value={{ state, dispatch }}>
+      <BoardNE />
+    </BoardContext.Provider>
+  );
+}
+
+function BoardNE() {
+  const { ShowEval, ShowNotation } = useContext(AppContext);
   const {
     state: { complete_board },
-  } = useContext(Context);
-  // console.log(board);
+  } = useContext(BoardContext);
   return (
-    <div className="col-span-6">
+    <div className="col-span-8">
       <div className="flex">
-        <Notation horizontal={false} />
+        {ShowEval && <div></div>}
+        {ShowNotation && <Notation horizontal={false} />}
         <div className="p-2">
           {complete_board.map((pieces, index) => (
             <Rank key={index} pieces={pieces} />
           ))}
         </div>
       </div>
-      <Notation horizontal={true} />
+      {ShowNotation && <Notation horizontal={true} />}
     </div>
   );
 }

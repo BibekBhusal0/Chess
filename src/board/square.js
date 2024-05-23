@@ -1,5 +1,6 @@
 import { useContext } from "react";
-import { Context } from "../App";
+import { AppContext } from "../App";
+import { BoardContext } from ".";
 
 export const classes = [
   "bg-wood-light",
@@ -41,17 +42,12 @@ function get_color(light, theme) {
 }
 
 function PieceImg({ piece }) {
-  const {
-    state: { theme },
-    dispatch,
-  } = useContext(Context);
+  const { theme } = useContext(AppContext);
   const path = `${process.env.PUBLIC_URL}/Images/pieces/${theme}/${
     piece.color
   }${piece.piece.toLowerCase()}.png`;
   return (
     <img
-      onAbort={dispatch({ type: "ShowMoves", piece: piece })}
-      onClick={dispatch({ type: "ShowMoves", piece: piece })}
       src={path}
       className="hover:scale-105 transition-all"
       alt={`${c[piece.color]} ${piece_names[piece.piece.toLowerCase()]}`}
@@ -62,23 +58,33 @@ function PieceImg({ piece }) {
 function LegalMove() {
   return (
     <div className="flex">
-      <div className=" w-1/4 aspect-square opacity-65 bg-red-600 absolute top-2/4 -translate-y-1/2 left-1/2 -translate-x-1/2 rounded-full hover:w-3/4 hover:rounded-2xl hover:opacity-80 transition-all "></div>
+      <div className="w-1/4 aspect-square opacity-65 bg-red-600 absolute top-2/4 -translate-y-1/2 left-1/2 -translate-x-1/2 rounded-full transition-all hover:w-3/4 hover:rounded-2xl hover:opacity-80"></div>
     </div>
   );
 }
 
 function Square({ piece }) {
-  const {
-    state: { theme, show_legal_moves },
-  } = useContext(Context);
+  const { dispatch } = useContext(BoardContext);
+  const { theme } = useContext(AppContext);
+  const { ShowLegalMoves } = useContext(AppContext);
+  const handle_click = () => {
+    if (piece.empty) {
+      dispatch({ type: "HideMoves" });
+    } else if (piece.showing_legal) {
+      dispatch({ type: "MakeMove", peice: piece });
+    } else {
+      dispatch({ type: "ShowMoves", piece: piece });
+    }
+  };
   return (
     <div
-      className={`aspect-square relative w-full grid ${get_color(
+      onClick={() => handle_click()}
+      className={`aspect-square relative w-full grid  ${get_color(
         piece.light_square,
         theme
       )}  `}>
-      {!piece.empty && <PieceImg piece={piece}></PieceImg>}
-      {piece.showing_legal && show_legal_moves && <LegalMove></LegalMove>}
+      {!piece.empty && <PieceImg piece={piece} />}
+      {piece.showing_legal && ShowLegalMoves && <LegalMove />}
     </div>
   );
 }
