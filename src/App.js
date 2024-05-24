@@ -26,7 +26,7 @@ export const BoardContext = createContext();
 function App() {
   const [state, dispatch] = useReducer(reducer, initialState);
   const [depth, setDepth] = useState(15);
-  const [theme, setTheme] = useState("wood");
+  const [theme, setTheme] = useState("ocen");
   const [ShowEval, setShowEval] = useState(false);
   const [ShowNotation, setShowNotation] = useState(true);
   const [ShowLegalMoves, setShowLegalMoves] = useState(true);

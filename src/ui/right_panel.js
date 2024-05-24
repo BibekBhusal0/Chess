@@ -5,7 +5,6 @@ function RightPanel() {
   const {
     state: { move },
   } = useContext(BoardContext);
-  console.log(move);
   return (
     <div className=" col-span-2 border-l-4 p-2">
       <div className="text-xl pb-11">Right side panel will be here</div>

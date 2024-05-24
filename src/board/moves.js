@@ -47,7 +47,6 @@ function clear_highlight(board) {
   for (var i = 0; i < 8; i++) {
     for (var j = 0; j < 8; j++) {
       board[i][j].highlight = false;
-      // console.log("board[i][j]");
     }
   }
   return board;
@@ -76,7 +75,42 @@ function get_queen_move(board, x, y) {
   const bishop = get_bishop_move(board, x, y);
   return bishop.concat(rook);
 }
-function get_pawn_move(board, x, y) {}
+function get_pawn_move(board, x, y) {
+  const piece = board[x][y];
+  const white = piece.color === "w";
+  const forward = white ? -1 : 1;
+  const second_rank = (white ? 6 : 1) === x;
+  const fifth_rank = (white ? 4 : 3) === x;
+  const legal_moves = [];
+  const sides = [-1, 1];
+  var i = 1;
+  while (i < 3) {
+    if (x === 0 || x === 7) {
+      break;
+    }
+    if (!board[x + forward][y].empty) {
+      break;
+    }
+    legal_moves.push([x + forward * i, y]);
+    if (!second_rank) {
+      break;
+    }
+    i++;
+  }
+  for (var j = 0; j < 2; j++) {
+    const destination = y + sides[j];
+    const sq = board[x + forward][destination];
+    if (destination < 0 || destination >= 8 || x === 0 || x === 7) {
+      continue;
+    }
+    if (!sq.empty && sq.color !== piece.color) {
+      legal_moves.push([x + forward, destination]);
+    }
+    console.log(sq.empty);
+  }
+
+  return legal_moves;
+}
 function get_knight_move(board, x, y) {
   const m = [1, 2, -1, -2];
   const moves = [];
@@ -99,7 +133,11 @@ function get_knight_move(board, x, y) {
   }
   return moves;
 }
-function get_king_move(board, x, y) {}
+function get_king_move(board, x, y) {
+  console.log(board, x, y);
+  const legal_moves = [];
+  return legal_moves;
+}
 
 export function hide_legal_moves(board) {
   for (var rank = 0; rank < 8; rank++) {

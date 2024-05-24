@@ -1,12 +1,12 @@
 import { hide_legal_moves, make_move, show_legal_moves } from "./moves";
 
 const sq_n = "abcdefgh".split("");
-// const initialFen =
-//   "rnbqkbnr/pppppppp/--------/--------/--------/--------/PPPPPPPP/RNBQKBNR";
 const initialFen =
-  "rrrrbbbb/-----n--/---q----/--------/--------/--------/---QN---/RRRRBBBB";
+  "rnbqkbnr/pppppppp/--------/--------/--------/--------/PPPPPPPP/RNBQKBNR";
+// const initialFen =
+//   "rrrrbbPb/PPP---PP/---q----/--------/--------/--------/---Qp---/RRpRBBBB";
 
-const notations = ["12345678".split(""), "abcdefgh".split("")];
+const notations = ["87654321".split(""), "abcdefgh".split("")];
 
 function fen2board(fen) {
   return fen.split("/").map((line) => line.split(""));
@@ -47,7 +47,7 @@ function complete_board(fen) {
         check: false,
         color: piece === piece.toUpperCase() ? "w" : "b",
         square: { x: i, y: j },
-        noatation: `${sq_n[j]}${i + 1}`,
+        notation: `${sq_n[j]}${8 - i}`,
         light_square: i % 2 === j % 2,
         showing_legal: false,
         clicked: false,

@@ -49,17 +49,27 @@ function PieceImg({ piece }) {
   return (
     <img
       src={path}
-      className="hover:scale-105 transition-all"
+      className="hover:scale-105 transition-all p-1  z-10"
       alt={`${c[piece.color]} ${piece_names[piece.piece.toLowerCase()]}`}
     />
   );
 }
 
-function LegalMove() {
+function LegalMove({ empty }) {
   return (
-    <div className="flex">
-      <div className="w-1/4 aspect-square opacity-65 bg-red-600 absolute top-2/4 -translate-y-1/2 left-1/2 -translate-x-1/2 rounded-full transition-all hover:w-3/4 hover:rounded-2xl hover:opacity-80"></div>
+    <div className="flex group w-full h-full  opacity-30 z-20">
+      {empty ? (
+        <div className="w-1/4 aspect-square  opacity-75 bg-LM absolute-center rounded-full transition-all group-hover:w-1/3  group-hover:opacity-90"></div>
+      ) : (
+        <div className=" w-10/12 aspect-square opacity-75 border-solid border-8 border-LM absolute-center rounded-full transition-all group-hover:w-11/12  group-hover:opacity-90"></div>
+      )}
     </div>
+  );
+}
+
+function Highlight() {
+  return (
+    <div className=" w-full h-full bg-yellow-400 opacity-40 absolute z-0"></div>
   );
 }
 
@@ -83,8 +93,12 @@ function Square({ piece }) {
         piece.light_square,
         theme
       )}  `}>
+      {piece.clicked && <Highlight piece={piece} />}
+
       {!piece.empty && <PieceImg piece={piece} />}
-      {piece.showing_legal && ShowLegalMoves && <LegalMove />}
+      {piece.showing_legal && ShowLegalMoves && (
+        <LegalMove empty={piece.empty} />
+      )}
     </div>
   );
 }
