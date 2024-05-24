@@ -42,7 +42,6 @@ const piece_moves = {
   k: get_king_move,
   p: get_pawn_move,
 };
-
 function clear_highlight(board) {
   for (var i = 0; i < 8; i++) {
     for (var j = 0; j < 8; j++) {
@@ -80,7 +79,6 @@ function get_pawn_move(board, x, y) {
   const white = piece.color === "w";
   const forward = white ? -1 : 1;
   const second_rank = (white ? 6 : 1) === x;
-  // const fifth_rank = (white ? 4 : 3) === x;
   const legal_moves = [];
   const sides = [-1, 1];
   var i = 1;

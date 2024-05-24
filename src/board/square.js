@@ -43,7 +43,7 @@ function get_color(light, theme) {
 
 function PieceImg({ piece }) {
   const { theme } = useContext(AppContext);
-  const path = `.${process.env.PUBLIC_URL}/Images/pieces/${theme}/${
+  const path = `./Images/pieces/${theme}/${
     piece.color
   }${piece.piece.toLowerCase()}.png`;
   console.log(path);
@@ -77,7 +77,7 @@ function Highlight() {
 function Square({ piece }) {
   const { dispatch } = useContext(BoardContext);
   const { theme } = useContext(AppContext);
-  const { ShowLegalMoves } = useContext(AppContext);
+  const { ShowLegalMoves, HighlightMoves } = useContext(AppContext);
   const handle_click = () => {
     if (piece.showing_legal) {
       dispatch({ type: "MakeMove", piece: piece });
@@ -94,12 +94,13 @@ function Square({ piece }) {
         piece.light_square,
         theme
       )}  `}>
-      {piece.clicked && <Highlight piece={piece} />}
+      {piece.clicked && <Highlight />}
 
       {!piece.empty && <PieceImg piece={piece} />}
       {piece.showing_legal && ShowLegalMoves && (
         <LegalMove empty={piece.empty} />
       )}
+      {piece.highlight && HighlightMoves && <Highlight />}
     </div>
   );
 }
