@@ -36,7 +36,7 @@ function ChessBoard() {
     state: { board },
   } = useContext(BoardContext);
   return (
-    <div className="col-span-5">
+    <div className="col-span-7">
       <div className="flex">
         {ShowEval && <div></div>}
         {ShowNotation && <Notation horizontal={false} />}

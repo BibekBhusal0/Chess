@@ -1,3 +1,6 @@
+import { in_check } from "./check";
+import { board2fen, full_board } from "./reducers";
+
 function check(board, x, y, dx, dy) {
   var i = x + dx;
   var j = y + dy;
@@ -51,7 +54,7 @@ function clear_highlight(board) {
   return board;
 }
 
-function get_rook_move(board, x, y) {
+export function get_rook_move(board, x, y) {
   const directions = [
     [1, 0],
     [-1, 0],
@@ -60,7 +63,7 @@ function get_rook_move(board, x, y) {
   ];
   return check_together(directions, board, x, y);
 }
-function get_bishop_move(board, x, y) {
+export function get_bishop_move(board, x, y) {
   const directions = [
     [1, 1],
     [-1, 1],
@@ -69,18 +72,31 @@ function get_bishop_move(board, x, y) {
   ];
   return check_together(directions, board, x, y);
 }
-function get_queen_move(board, x, y) {
+export function get_queen_move(board, x, y) {
   const rook = get_rook_move(board, x, y);
   const bishop = get_bishop_move(board, x, y);
   return bishop.concat(rook);
 }
-function get_pawn_move(board, x, y) {
+export function get_pawn_controls(board, x, y) {
+  const sides = [-1, 1];
+  const forward = board[x][y].color === "w" ? -1 : 1;
+
+  const controls = [];
+  for (var j = 0; j < 2; j++) {
+    const destination = y + sides[j];
+    if (destination < 0 || destination >= 8 || x === 0 || x === 7) {
+      continue;
+    }
+    controls.push([x + forward, destination]);
+  }
+  return controls;
+}
+export function get_pawn_move(board, x, y) {
   const piece = board[x][y];
   const white = piece.color === "w";
   const forward = white ? -1 : 1;
   const second_rank = (white ? 6 : 1) === x;
   const legal_moves = [];
-  const sides = [-1, 1];
   var i = 1;
   while (i < 3) {
     if (x === 0 || x === 7) {
@@ -95,21 +111,18 @@ function get_pawn_move(board, x, y) {
     }
     i++;
   }
-  for (var j = 0; j < 2; j++) {
-    const destination = y + sides[j];
-    const sq = board[x + forward][destination];
-    if (destination < 0 || destination >= 8 || x === 0 || x === 7) {
-      continue;
-    }
+  const controls = get_pawn_controls(board, x, y);
+
+  for (var j = 0; j < controls.length; j++) {
+    const sq = board[controls[j][0]][controls[j][1]];
     if (!sq.empty && sq.color !== piece.color) {
-      legal_moves.push([x + forward, destination]);
+      legal_moves.push([controls[j][0], controls[j][1]]);
     }
-    console.log(sq.empty);
   }
 
   return legal_moves;
 }
-function get_knight_move(board, x, y) {
+export function get_knight_move(board, x, y) {
   const m = [1, 2, -1, -2];
   const moves = [];
   for (var i = 0; i < m.length; i++) {
@@ -131,9 +144,26 @@ function get_knight_move(board, x, y) {
   }
   return moves;
 }
-function get_king_move(board, x, y) {
-  console.log(board, x, y);
+export function get_king_move(board, x, y) {
   const legal_moves = [];
+  const d = [-1, 1, 0];
+  for (let i = 0; i < d.length; i++) {
+    for (let j = 0; j < d.length; j++) {
+      if (d[i] === 0 && d[j] === 0) {
+        continue;
+      }
+      const goto_x = x + d[i];
+      const goto_y = y + d[j];
+
+      const goto = board[goto_x][goto_y];
+      if (goto.empty) {
+        legal_moves.push([goto_x, goto_y]);
+      } else if (goto.color !== board[x][y].color) {
+        legal_moves.push([goto_x, goto_y]);
+      }
+    }
+  }
+
   return legal_moves;
 }
 
@@ -147,33 +177,45 @@ export function hide_legal_moves(board) {
   return board;
 }
 
-export function get_legal_moves(board, piece) {
+export function show_legal_moves(board, piece) {
   const x = piece.square.x;
   const y = piece.square.y;
+  const color = piece.color;
   const func = piece_moves[piece.piece.toLowerCase()];
   const moves = func(board, x, y);
-  return moves;
-}
-
-export function show_legal_moves(board, piece) {
-  const moves = get_legal_moves(board, piece);
   for (var i = 0; i < moves.length; i++) {
-    var c = moves[i];
-    board[c[0]][c[1]].showing_legal = true;
+    const c = moves[i];
+    var b = full_board(board2fen(board));
+    b = just_make_move(b, piece.square, { x: c[0], y: c[1] });
+    if (!in_check(b, color)) {
+      board[c[0]][c[1]].showing_legal = true;
+    }
   }
   board[piece.square.x][piece.square.y].clicked = true;
   return board;
 }
 
+function just_make_move(board, piece_coor, square_coor) {
+  const sq = board[square_coor.x][square_coor.y];
+  console.log(square_coor);
+  const piece = board[piece_coor.x][piece_coor.y];
+  console.log(sq.piece, piece.piece);
+  sq.piece = piece.piece;
+  piece.piece = "-";
+  return board;
+}
+
 export function make_move(board, square) {
-  const piece_corr = search_piece(board);
-  if (piece_corr) {
+  const piece_coor = search_piece(board);
+  if (piece_coor) {
     board = clear_highlight(board);
-    const piece = board[piece_corr.x][piece_corr.y];
+    const piece = board[piece_coor.x][piece_coor.y];
     const sq = board[square.x][square.y];
     sq.piece = piece.piece;
     sq.empty = false;
     sq.color = piece.color;
+    sq.highlight = true;
+    piece.highlight = true;
     piece.piece = "-";
     piece.empty = true;
     board = hide_legal_moves(board);

@@ -1,46 +1,32 @@
 import { hide_legal_moves, make_move, show_legal_moves } from "./moves";
 
 const sq_n = "abcdefgh".split("");
-const initialFen =
-  "rnbqkbnr/pppppppp/--------/--------/--------/--------/PPPPPPPP/RNBQKBNR";
-// const initialFen =
-//   "rrrrbbPb/PPP---PP/---q----/--------/--------/--------/---Qp---/RRpRBBBB";
-
+const initialFen = "rnbqkbnr/8/8/8/8/8/8/RNBQKBNR";
 const notations = ["87654321".split(""), "abcdefgh".split("")];
 
 function fen2board(fen) {
-  return fen.split("/").map((line) => line.split(""));
-}
-function board2fen(board) {
-  return board.map((line) => line.join("")).join("/");
-}
-function stockfish_fen(board) {
-  const fen = board2fen(board);
-  const sfen = fen.split("");
-  const sfen2 = [];
-  var empty_count = 0;
-  sfen.map((x) => {
-    if (x === "-") {
-      empty_count += 1;
-      return "";
-    } else {
-      var e = "";
-      if (empty_count > 0) {
-        e = empty_count.toString();
+  const rows = fen.split("/");
+  const board = [];
+  for (const sq of rows) {
+    var board_row = [];
+    for (const piece of sq) {
+      if (piece.match(/[1-8]/)) {
+        const emptyCount = parseInt(piece);
+        board_row = "-".repeat(emptyCount).split("");
+      } else {
+        board_row.push(piece);
       }
-      empty_count = 0;
-      sfen2.push(e + x);
-      return e + x;
     }
-  });
-  return sfen2.join("");
+    board.push(board_row);
+  }
+  return board;
 }
-function complete_board(fen) {
-  const board = fen2board(fen);
-  for (var i = 0; i < 8; i++) {
-    for (var j = 0; j < 8; j++) {
-      var piece = board[i][j];
-      board[i][j] = {
+
+export function full_board(fen) {
+  const simple_board = fen2board(fen);
+  const full_board = simple_board.map((rank, i) =>
+    rank.map((piece, j) => {
+      return {
         piece: piece,
         empty: piece === "-",
         highlight: false,
@@ -52,28 +38,36 @@ function complete_board(fen) {
         showing_legal: false,
         clicked: false,
       };
-    }
-  }
-  return board;
+    })
+  );
+  return full_board;
 }
-function cb2stockfish_fen(board) {
-  const fen = [];
-  for (var i = 0; i < 8; i++) {
-    for (var j = 0; j < 8; j++) {
-      fen.push(board[i][j].piece);
+export function board2fen(board) {
+  var fen = "";
+  for (const rank of board) {
+    var emptyCount = 0;
+    for (const sq of rank) {
+      if (sq.piece === "-") {
+        emptyCount++;
+      } else {
+        if (emptyCount > 0) {
+          fen += emptyCount;
+          emptyCount = 0;
+        }
+        fen += sq.piece;
+      }
     }
-    if (i !== 7) {
-      fen.push("/");
+    if (emptyCount > 0) {
+      fen += emptyCount;
     }
+    fen += "/";
   }
-  return stockfish_fen(fen2board(fen.join("")));
+  return fen.slice(0, -1);
 }
 
-const initialBoard = fen2board(initialFen);
-cb2stockfish_fen(complete_board(initialFen));
 const initialState = {
-  stockfish_fen: stockfish_fen(initialBoard),
-  board: complete_board(initialFen),
+  fen: initialFen,
+  board: full_board(initialFen),
   notations: notations,
   move: "w",
   white_bottom: true,
@@ -96,9 +90,9 @@ function reducer(state, action) {
       return { ...state, board: board };
     case "MakeMove":
       board = make_move([...state.board], action.piece.square);
-      const sf = cb2stockfish_fen(board);
+      const sf = board2fen(board);
       const move = state.move === "w" ? "b" : "w";
-      return { ...state, board: board, stockfish_fen: sf, move: move };
+      return { ...state, board: board, fen: sf, move: move };
     default:
       return state;
   }
