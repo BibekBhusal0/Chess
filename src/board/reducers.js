@@ -4,21 +4,22 @@ const sq_n = "abcdefgh".split("");
 const initialFen = "rnbqkbnr/8/8/8/8/8/8/RNBQKBNR";
 const notations = ["87654321".split(""), "abcdefgh".split("")];
 
-function fen2board(fen) {
+export function fen2board(fen) {
   const rows = fen.split("/");
   const board = [];
-  for (const sq of rows) {
-    var board_row = [];
-    for (const piece of sq) {
-      if (piece.match(/[1-8]/)) {
-        const emptyCount = parseInt(piece);
-        board_row = "-".repeat(emptyCount).split("");
+  for (const row of rows) {
+    var board_row = "";
+    for (const sq of row) {
+      if (sq.match(/[1-8]/)) {
+        const emptyCount = parseInt(sq);
+        board_row += "-".repeat(emptyCount);
       } else {
-        board_row.push(piece);
+        board_row += sq;
       }
     }
-    board.push(board_row);
+    board.push(board_row.split(""));
   }
+
   return board;
 }
 
