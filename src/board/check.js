@@ -2,7 +2,7 @@ import {
   get_bishop_move,
   get_king_move,
   get_knight_move,
-  get_pawn_controls,
+  get_pawn_move,
   get_queen_move,
   get_rook_move,
 } from "./moves";
@@ -29,7 +29,7 @@ function get_all_pieces(board, color) {
   return pieces;
 }
 const piece_controls = {
-  p: get_pawn_controls,
+  p: get_pawn_move,
   r: get_rook_move,
   n: get_knight_move,
   b: get_bishop_move,
@@ -38,7 +38,7 @@ const piece_controls = {
 };
 
 function get_all_controls(board, color) {
-  const controls = new Set([]);
+  const controls = [];
   const pieces = get_all_pieces(board, color);
   for (var i = 0; i < pieces.length; i++) {
     const piece_x = pieces[i][0];
@@ -46,13 +46,15 @@ function get_all_controls(board, color) {
     const piece = board[piece_x][piece_y];
     if (piece.piece !== "-") {
       const func = piece_controls[piece.piece.toLowerCase()];
-      console.log(piece.piece.toLowerCase());
-      console.log(func(board, piece_x, piece_y));
+      // console.log(func(board, piece_x, piece_y));
+      controls.push(...func(board, piece_x, piece_y, true));
     }
   }
+  return Array.from(new Set(controls));
 }
 export function in_check(board, color) {
-  // const opp_color = color === "w" ? "b" : "w";
-  // const opp_controls = get_all_controls(board, opp_color);
+  const opp_color = color === "w" ? "b" : "w";
+  const opp_controls = get_all_controls(board, opp_color);
+  console.log(opp_controls);
   return false;
 }
