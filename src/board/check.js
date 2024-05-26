@@ -48,7 +48,7 @@ function get_all_controls(board, color) {
     const piece = board[piece_x][piece_y];
     if (piece.piece !== "-") {
       const func = piece_controls[piece.piece.toLowerCase()];
-      controls.push(...func(board, piece_x, piece_y));
+      controls.push(...func(board, piece_x, piece_y, true));
     }
   }
   return Array.from(new Set(controls));
@@ -64,3 +64,7 @@ export function in_check(board, color) {
   }
   return false;
 }
+// export function mate(board, color)
+// {
+//   if board
+// }

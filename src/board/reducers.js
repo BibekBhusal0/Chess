@@ -1,7 +1,7 @@
 import { hide_legal_moves, make_move, show_legal_moves } from "./moves";
 
 const sq_n = "abcdefgh".split("");
-const initialFen = "rnbqkbnr/8/8/8/8/8/8/RNBQKBNR";
+const initialFen = "rnbqk/8/8/8/8/8/8/R3K2R";
 const notations = ["87654321".split(""), "abcdefgh".split("")];
 
 export function fen2board(fen) {
@@ -22,7 +22,6 @@ export function fen2board(fen) {
 
   return board;
 }
-
 export function full_board(fen) {
   const simple_board = fen2board(fen);
   const full_board = simple_board.map((rank, i) =>
@@ -31,7 +30,8 @@ export function full_board(fen) {
         piece: piece,
         empty: piece === "-",
         highlight: false,
-        check: false,
+        in_check: false,
+        not_moved: true,
         color: piece === piece.toUpperCase() ? "w" : "b",
         square: { x: i, y: j },
         notation: `${sq_n[j]}${8 - i}`,

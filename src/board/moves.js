@@ -1,5 +1,4 @@
 import { in_check } from "./check";
-import { board2fen, full_board } from "./reducers";
 
 function check(board, x, y, dx, dy) {
   var i = x + dx;
@@ -148,9 +147,45 @@ export function get_knight_move(board, x, y) {
   }
   return moves;
 }
-export function get_king_move(board, x, y) {
+export function get_king_move(board, x, y, c = false) {
   const legal_moves = [];
   const d = [-1, 1, 0];
+  const piece = board[x][y];
+  const color = piece.color;
+  const first_rank = piece.color === "w" ? 7 : 0;
+
+  if (x === first_rank && piece.not_moved && !piece.in_check && !c) {
+    const rook_corrs = [0, 7];
+    for (const i of rook_corrs) {
+      const dir = i === 0 ? -1 : 1;
+      const rook = board[x][i];
+
+      if (rook.not_moved && rook.piece.toLowerCase() === "r") {
+        var j = y;
+        var not_check_count = 0;
+        while (j !== i) {
+          if (j !== y) {
+            const p = board[x][j];
+            if (p.empty) {
+              if (j !== 1) {
+                var clone = structuredClone(board);
+                clone = make_move(clone, { x: x, y: j }, false, { x: x, y: y });
+                if (in_check(clone, color)) {
+                  break;
+                } else {
+                  not_check_count++;
+                }
+              }
+            }
+          }
+          j += dir;
+        }
+        if (not_check_count === 2) {
+          legal_moves.push([x, y + dir * 2]);
+        }
+      }
+    }
+  }
   for (const i of d) {
     for (const j of d) {
       if (i === 0 && j === 0) {
@@ -181,21 +216,28 @@ export function hide_legal_moves(board) {
   }
   return board;
 }
-
-export function show_legal_moves(board, piece) {
+export function get_legal_moves(board, piece) {
   const x = piece.square.x;
   const y = piece.square.y;
   const color = piece.color;
   const func = piece_moves[piece.piece.toLowerCase()];
   const moves = func(board, x, y);
-  for (var i = 0; i < moves.length; i++) {
-    const c = moves[i];
-    const fen = board2fen(board);
-    var b = full_board(fen);
-    b = make_move(b, piece.square, false, { x: c[0], y: c[1] });
+  const legal_moves = [];
+  for (const c of moves) {
+    var b = structuredClone(board);
+    b = make_move(b, { x: c[0], y: c[1] }, false, piece.square);
     if (!in_check(b, color)) {
-      board[c[0]][c[1]].showing_legal = true;
+      legal_moves.push(c);
     }
+  }
+
+  return legal_moves;
+}
+
+export function show_legal_moves(board, piece) {
+  const legal_moves = get_legal_moves(board, piece);
+  for (const c of legal_moves) {
+    board[c[0]][c[1]].showing_legal = true;
   }
   board[piece.square.x][piece.square.y].clicked = true;
   return board;
@@ -207,7 +249,6 @@ export function make_move(board, square, serius = true, piece_coor = null) {
   }
   const piece = board[piece_coor.x][piece_coor.y];
   const sq = board[square.x][square.y];
-
   if (piece.piece.toLowerCase() === "p") {
     const white = piece.color === "w";
     const fifth_rank = white ? 3 : 4;
@@ -217,17 +258,47 @@ export function make_move(board, square, serius = true, piece_coor = null) {
       eps.piece = "-";
     }
   }
+  if (serius) {
+    if (
+      piece.piece.toLowerCase() === "k" &&
+      piece.not_moved &&
+      !piece.in_check
+    ) {
+      const y_coor = square.y;
+      if (y_coor === 2 || y_coor === 6) {
+        const init_y = y_coor === 6 ? 7 : 0;
+        const final_y = y_coor === 6 ? 5 : 3;
+        console.log(
+          board[square.x][init_y].notation,
+          board[square.x][final_y].notation
+        );
+        make_move(
+          board,
+          {
+            ...square,
+            y: final_y,
+          },
+          false,
+          {
+            ...square,
+            y: init_y,
+          }
+        );
+      }
+    }
+    board = clear_highlight(board);
+
+    sq.highlight = true;
+    piece.highlight = true;
+    board = hide_legal_moves(board);
+  }
 
   sq.piece = piece.piece;
   sq.empty = false;
   sq.color = piece.color;
   piece.piece = "-";
   piece.empty = true;
-  if (serius) {
-    board = clear_highlight(board);
-    sq.highlight = true;
-    piece.highlight = true;
-    board = hide_legal_moves(board);
-  }
+  sq.not_moved = false;
+  piece.not_moved = false;
   return board;
 }
