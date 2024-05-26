@@ -21,7 +21,12 @@ function LeftPanel() {
   return (
     <div className=" col-span-3 pr-3 border-r-8">
       <div className=" text-xl pb-11">
-        Just sample left panel work no ready yet
+        Just sample left panel all functions may not be working
+        <br />
+        <div className=" text-lg">Eval bar and not working yet</div>
+        <div className=" text-lg">
+          This Website is not responsive for different divices yet
+        </div>
       </div>
       <div className=" border-b-4 pb-10">
         <ToggleSwitch

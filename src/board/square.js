@@ -43,9 +43,9 @@ function get_color(light, theme) {
 
 function PieceImg({ piece }) {
   const { theme } = useContext(AppContext);
-  const path = `.${process.env.PUBLIC_URL}/Images/pieces/${theme}/${
-    piece.color
-  }${piece.piece.toLowerCase()}.png`;
+  const path = `.${
+    process.env.PUBLIC_URL
+  }/images/pieces/${theme.toLowerCase()}/${piece.color.toLowerCase()}${piece.piece.toUpperCase()}.png`;
   return (
     <img
       src={path}

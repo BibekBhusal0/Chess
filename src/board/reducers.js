@@ -2,7 +2,7 @@ import { find_king, in_check } from "./check";
 import { hide_legal_moves, make_move, show_legal_moves } from "./moves";
 
 const sq_n = "abcdefgh".split("");
-const initialFen = "rnbqkbnr/8/8/8/8/8/8/RNBQKBNR";
+const initialFen = "rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR";
 const notations = ["87654321".split(""), "abcdefgh".split("")];
 
 export function fen2board(fen) {

@@ -12,13 +12,13 @@ import { initialState, reducer } from "./board/reducers";
 // var sample_request = `${api}?fen=${fen}&depth=${depth}`;
 
 export const all_themes = [
+  "Ocen",
   "Wood",
   "Cosmos",
   "Dash",
   "Defult",
   "Glass",
   "Nature",
-  "Ocen",
 ];
 export const AppContext = createContext();
 export const BoardContext = createContext();
@@ -50,7 +50,7 @@ function App() {
       }}>
       {/* header if i keep it */}
       <div className="grid grid-cols-10 p-3 gap-3">
-        {/* <LeftPanel /> */}
+        <LeftPanel />
         <BoardContext.Provider value={{ state, dispatch }}>
           <ChessBoard />
           <RightPanel />
