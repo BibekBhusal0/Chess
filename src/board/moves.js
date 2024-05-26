@@ -48,6 +48,7 @@ function clear_highlight(board) {
   for (var i = 0; i < 8; i++) {
     for (var j = 0; j < 8; j++) {
       board[i][j].highlight = false;
+      board[i][j].in_check = false;
     }
   }
   return board;
@@ -76,21 +77,7 @@ export function get_queen_move(board, x, y) {
   const bishop = get_bishop_move(board, x, y);
   return bishop.concat(rook);
 }
-export function get_pawn_controls(board, x, y) {
-  const sides = [-1, 1];
-  const forward = board[x][y].color === "w" ? -1 : 1;
-
-  const controls = [];
-  for (var j = 0; j < 2; j++) {
-    const destination = y + sides[j];
-    if (destination < 0 || destination >= 8 || x === 0 || x === 7) {
-      continue;
-    }
-    controls.push([x + forward, destination]);
-  }
-  return controls;
-}
-export function get_pawn_move(board, x, y) {
+export function get_pawn_move(board, x, y, c = false) {
   const piece = board[x][y];
   const white = piece.color === "w";
   const forward = white ? -1 : 1;
@@ -98,6 +85,21 @@ export function get_pawn_move(board, x, y) {
   const fifth_rank = (white ? 3 : 4) === x;
   const legal_moves = [];
   var i = 1;
+
+  const sides = [-1, 1];
+
+  const controls = [];
+  for (let j = 0; j < 2; j++) {
+    const destination = y + sides[j];
+    if (destination < 0 || destination >= 8 || x === 0 || x === 7) {
+      continue;
+    }
+    controls.push([x + forward, destination]);
+  }
+  if (c) {
+    return controls;
+  }
+
   while (i < 3) {
     if (x === 0 || x === 7) {
       break;
@@ -111,9 +113,7 @@ export function get_pawn_move(board, x, y) {
     }
     i++;
   }
-  const controls = get_pawn_controls(board, x, y);
-
-  for (var j = 0; j < controls.length; j++) {
+  for (let j = 0; j < controls.length; j++) {
     const sq = board[controls[j][0]][controls[j][1]];
     if (
       (!sq.empty && sq.color !== piece.color) ||
@@ -243,7 +243,7 @@ export function show_legal_moves(board, piece) {
   return board;
 }
 
-export function make_move(board, square, serius = true, piece_coor = null) {
+export function make_move(board, square, serious = true, piece_coor = null) {
   if (piece_coor === null) {
     piece_coor = search_piece(board);
   }
@@ -258,7 +258,7 @@ export function make_move(board, square, serius = true, piece_coor = null) {
       eps.piece = "-";
     }
   }
-  if (serius) {
+  if (serious) {
     if (
       piece.piece.toLowerCase() === "k" &&
       piece.not_moved &&
@@ -268,10 +268,7 @@ export function make_move(board, square, serius = true, piece_coor = null) {
       if (y_coor === 2 || y_coor === 6) {
         const init_y = y_coor === 6 ? 7 : 0;
         const final_y = y_coor === 6 ? 5 : 3;
-        console.log(
-          board[square.x][init_y].notation,
-          board[square.x][final_y].notation
-        );
+
         make_move(
           board,
           {

@@ -49,7 +49,7 @@ function PieceImg({ piece }) {
   return (
     <img
       src={path}
-      className="hover:scale-105 transition-all p-1  z-10"
+      className="hover:scale-105 transition-all p-1  z-20 "
       alt={`${c[piece.color]} ${piece_names[piece.piece.toLowerCase()]}`}
     />
   );
@@ -57,13 +57,19 @@ function PieceImg({ piece }) {
 
 function LegalMove({ empty }) {
   return (
-    <div className="flex group w-full h-full  opacity-30 z-20">
+    <div className="flex group w-full h-full  opacity-30 z-30">
       {empty ? (
         <div className="w-1/4 aspect-square  opacity-75 bg-LM absolute-center rounded-full transition-all group-hover:w-1/3  group-hover:opacity-90"></div>
       ) : (
         <div className=" w-10/12 aspect-square opacity-75 border-solid border-8 border-LM absolute-center rounded-full transition-all group-hover:w-11/12  group-hover:opacity-90"></div>
       )}
     </div>
+  );
+}
+
+function Check() {
+  return (
+    <div className=" w-full h-full absolute z-10 bg-radial-gradient from-red-500 to-transparent from-30%"></div>
   );
 }
 
@@ -93,13 +99,13 @@ function Square({ piece }) {
         piece.light_square,
         theme
       )}  `}>
-      {piece.clicked && <Highlight />}
-
       {!piece.empty && <PieceImg piece={piece} />}
+      {piece.clicked && <Highlight />}
       {piece.showing_legal && ShowLegalMoves && (
         <LegalMove empty={piece.empty} />
       )}
       {piece.highlight && HighlightMoves && <Highlight />}
+      {piece.in_check && <Check />}
     </div>
   );
 }

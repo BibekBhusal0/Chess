@@ -2,12 +2,12 @@ import {
   get_bishop_move,
   get_king_move,
   get_knight_move,
-  get_pawn_controls,
+  get_pawn_move,
   get_queen_move,
   get_rook_move,
 } from "./moves";
 
-function find_king(board, color) {
+export function find_king(board, color) {
   for (var i = 0; i < 8; i++) {
     for (var j = 0; j < 8; j++) {
       const sq = board[i][j];
@@ -31,7 +31,7 @@ function get_all_pieces(board, color) {
   return pieces;
 }
 const piece_controls = {
-  p: get_pawn_controls,
+  p: get_pawn_move,
   r: get_rook_move,
   n: get_knight_move,
   b: get_bishop_move,
@@ -64,7 +64,8 @@ export function in_check(board, color) {
   }
   return false;
 }
+
 // export function mate(board, color)
 // {
-//   if board
+
 // }

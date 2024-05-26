@@ -1,7 +1,8 @@
+import { find_king, in_check } from "./check";
 import { hide_legal_moves, make_move, show_legal_moves } from "./moves";
 
 const sq_n = "abcdefgh".split("");
-const initialFen = "rnbqk/8/8/8/8/8/8/R3K2R";
+const initialFen = "rnbqkbnr/8/8/8/8/8/8/RNBQKBNR";
 const notations = ["87654321".split(""), "abcdefgh".split("")];
 
 export function fen2board(fen) {
@@ -93,6 +94,11 @@ function reducer(state, action) {
       board = make_move([...state.board], action.piece.square);
       const sf = board2fen(board);
       const move = state.move === "w" ? "b" : "w";
+      if (in_check(board, move)) {
+        var king = find_king(board, move);
+        king = state.board[king.x][king.y];
+        king.in_check = true;
+      }
       return { ...state, board: board, fen: sf, move: move };
     default:
       return state;
