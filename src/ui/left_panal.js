@@ -20,13 +20,8 @@ function LeftPanel() {
   } = useContext(AppContext);
   return (
     <div className=" col-span-3 pr-3 border-r-8">
-      <div className=" text-xl pb-11">
-        Just sample left panel all functions may not be working
-        <br />
-        <div className=" text-lg">Eval bar and not working yet</div>
-        <div className=" text-lg">
-          This Website is not responsive for different divices yet
-        </div>
+      <div className="text-xl pb-11">
+        Just left panel (not complete yet) all functions may not be working
       </div>
       <div className=" border-b-4 pb-10">
         <ToggleSwitch
@@ -61,6 +56,30 @@ function LeftPanel() {
         changeBool={setShowEval}
         title="Evaluation Bar"
       />
+      <div className="text-xl pb-11 border-t-4">
+        Functions yet to add
+        <ol className="list-decimal pl-4 pt-2">
+          <li className=" text-lg">Checkmate and stalemate</li>
+          <li className=" text-lg">Piece promotions</li>
+          <li className=" text-lg"> Stock fish be able to take enpassant</li>
+          <li className=" text-lg">Eval Bar and other stockfish settings </li>
+          <li className=" text-lg">
+            improve square color and chess pieces (themes)
+          </li>
+          <li className=" text-lg">
+            Useless Draw rules like 3 fold repetition, insufficient checkmate
+            material, 50 move rule
+          </li>
+
+          <li className=" text-lg">
+            Chosing color against stockfish and board flip
+          </li>
+          <li className=" text-lg">Chess Notations </li>
+          <li className=" text-lg">
+            Make website responsive for different screens
+          </li>
+        </ol>
+      </div>
     </div>
   );
 }

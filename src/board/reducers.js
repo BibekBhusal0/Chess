@@ -5,6 +5,12 @@ const sq_n = "abcdefgh".split("");
 const initialFen = "rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1";
 const notations = ["87654321".split(""), "abcdefgh".split("")];
 
+export function notation2sq(notation) {
+  var file = notation[0].toLowerCase();
+  file = sq_n.indexOf(file);
+  const rank = 8 - parseInt(notation[1]);
+  return [rank, file];
+}
 export function fen2board(fen) {
   fen = fen.split(" ")[0];
   const rows = fen.split("/");
@@ -45,7 +51,7 @@ export function full_board(fen) {
   );
   return full_board;
 }
-export function board2fen(board, move = "w", move_count = 0) {
+export function board2fen(board, move = "w", move_count = 1) {
   var fen = "";
   for (const rank of board) {
     var emptyCount = 0;
@@ -83,17 +89,17 @@ export function board2fen(board, move = "w", move_count = 0) {
     cas += "-";
   }
   fen += cas;
-  fen += " - 0 " + Math.floor(move_count / 2 + 1);
+  fen += ` - 0 ${move_count}`;
   return fen;
 }
 
 const initialState = {
-  fen: initialFen,
   board: full_board(initialFen),
   all_moves: [],
   notations: notations,
   move: "w",
-  move_count: 0,
+  move_count: 1,
+  user: "w",
   white_bottom: true,
   game_over: false,
 };
@@ -101,7 +107,7 @@ const initialState = {
 function reducer(state, action) {
   switch (action.type) {
     case "ShowMoves":
-      const piece = action.piece;
+      var piece = action.piece;
       var board = [...state.board];
       if (!state.game_over && piece.color === state.move) {
         hide_legal_moves(board);
@@ -114,9 +120,9 @@ function reducer(state, action) {
       return { ...state, board: board };
     case "MakeMove":
       board = make_move([...state.board], action.piece.square);
-      const move = state.move === "w" ? "b" : "w";
       const move_count = state.move_count + 1;
-      const sf = board2fen(board, move, move_count);
+
+      var move = state.move === "w" ? "b" : "w";
       if (in_check(board, move)) {
         var king = find_king(board, move);
         king = state.board[king.x][king.y];
@@ -125,10 +131,23 @@ function reducer(state, action) {
       return {
         ...state,
         board: board,
-        fen: sf,
         move: move,
         move_count: move_count,
       };
+    case "ComputerMove":
+      piece = action.piece;
+      var square = action.square;
+      piece = { x: piece[0], y: piece[1] };
+      square = { x: square[0], y: square[1] };
+      board = make_move([...state.board], square, true, piece);
+      move = state.move === "w" ? "b" : "w";
+      if (in_check(board, move)) {
+        king = find_king(board, move);
+        king = state.board[king.x][king.y];
+        king.in_check = true;
+      }
+      return { ...state, board: board, move: move };
+
     default:
       return state;
   }

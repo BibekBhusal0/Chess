@@ -13,12 +13,13 @@ function RightPanel() {
         {move === "w" ? "White" : "Black"} to move
       </div>
       <div className=" border-t-4 mt-4 pl-3">
+        <div>Plan to add these to footer</div>
         Credits to API: <br />
         <a href="https://chess-api.com/">chess-api.com</a>
         <br />
         <br />
         Credits to pieces: <br />
-        <a href="https://github.com"> Lichess github</a>
+        <a href="https://github.com/lichess-org/lila"> Lichess github</a>
       </div>
     </div>
   );

@@ -7,8 +7,8 @@ export const classes = [
   "bg-wood-dark",
   "bg-dash-light",
   "bg-dash-dark",
-  "bg-defult-light",
-  "bg-defult-dark",
+  "bg-default-light",
+  "bg-default-dark",
   "bg-crazy-light",
   "bg-crazy-dark",
   "bg-cosmos-light",
@@ -67,20 +67,18 @@ function LegalMove({ empty }) {
   );
 }
 
-function Check() {
-  return (
-    <div className=" w-full h-full absolute z-10 bg-radial-gradient from-red-500 to-transparent from-30%"></div>
-  );
-}
-
-function Highlight() {
-  return (
-    <div className=" w-full h-full bg-yellow-400 opacity-40 absolute z-0"></div>
-  );
+function Highlight({ check }) {
+  const c = check
+    ? "bg-radial-gradient from-red-500 to-transparent from-30%"
+    : "bg-yellow-400 opacity-40 ";
+  return <div className={` w-full h-full absolute z-0 ${c}`}></div>;
 }
 
 function Square({ piece }) {
-  const { dispatch } = useContext(BoardContext);
+  const {
+    state: { user },
+    dispatch,
+  } = useContext(BoardContext);
   const { theme } = useContext(AppContext);
   const { ShowLegalMoves, HighlightMoves } = useContext(AppContext);
   const handle_click = () => {
@@ -88,7 +86,7 @@ function Square({ piece }) {
       dispatch({ type: "MakeMove", piece: piece });
     } else if (piece.empty) {
       dispatch({ type: "HideMoves" });
-    } else {
+    } else if (piece.color === user) {
       dispatch({ type: "ShowMoves", piece: piece });
     }
   };
@@ -100,12 +98,12 @@ function Square({ piece }) {
         theme
       )}  `}>
       {!piece.empty && <PieceImg piece={piece} />}
-      {piece.clicked && <Highlight />}
+      {piece.clicked && <Highlight check={false} />}
       {piece.showing_legal && ShowLegalMoves && (
         <LegalMove empty={piece.empty} />
       )}
-      {piece.highlight && HighlightMoves && <Highlight />}
-      {piece.in_check && <Check />}
+      {piece.highlight && HighlightMoves && <Highlight check={false} />}
+      {piece.in_check && <Highlight check={true} />}
     </div>
   );
 }

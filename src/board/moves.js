@@ -55,6 +55,25 @@ function clear_highlight(board) {
   return board;
 }
 
+export async function get_best_move(fen, depth = 15) {
+  const api = "https://stockfish.online/api/s/v2.php";
+  const req = `${api}?fen=${fen}&depth=${depth}`;
+  try {
+    const response = await fetch(req);
+    if (!response.ok) {
+      throw new Error(`Error status: ${response.status}`);
+    }
+    const data = await response.json();
+    if (!data.success) {
+      throw new Error(
+        `Error status: ${response.status} and success: ${data.success} `
+      );
+    }
+    return data;
+  } catch (error) {
+    console.log("You defeated stockfish by playing dumbest move");
+  }
+}
 export function get_rook_move(board, x, y) {
   const directions = [
     [1, 0],

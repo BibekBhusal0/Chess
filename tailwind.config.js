@@ -19,7 +19,7 @@ module.exports = {
           light: "#565E68",
           dark: "#633323",
         },
-        defult: {
+        default: {
           light: "#BEA481",
           dark: "#73533A",
         },
