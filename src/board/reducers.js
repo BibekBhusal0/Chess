@@ -1,11 +1,12 @@
-import { find_king, in_check } from "./check";
+import { can_castle, find_king, in_check } from "./check";
 import { hide_legal_moves, make_move, show_legal_moves } from "./moves";
 
 const sq_n = "abcdefgh".split("");
-const initialFen = "rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR";
+const initialFen = "rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1";
 const notations = ["87654321".split(""), "abcdefgh".split("")];
 
 export function fen2board(fen) {
+  fen = fen.split(" ")[0];
   const rows = fen.split("/");
   const board = [];
   for (const row of rows) {
@@ -44,7 +45,7 @@ export function full_board(fen) {
   );
   return full_board;
 }
-export function board2fen(board) {
+export function board2fen(board, move = "w", move_count = 0) {
   var fen = "";
   for (const rank of board) {
     var emptyCount = 0;
@@ -64,14 +65,35 @@ export function board2fen(board) {
     }
     fen += "/";
   }
-  return fen.slice(0, -1);
+  fen = fen.slice(0, -1);
+  fen += " " + move;
+  var cas = " ";
+  for (const color of ["w", "b"]) {
+    const castle = can_castle(board, color);
+    for (const c in castle) {
+      const ucase = (x) => x.toUpperCase();
+      const lcase = (x) => x.toLowerCase();
+      if (castle[c]) {
+        const cap = color === "w" ? ucase : lcase;
+        cas += cap(c[0]);
+      }
+    }
+  }
+  if (cas === " ") {
+    cas += "-";
+  }
+  fen += cas;
+  fen += " - 0 " + Math.floor(move_count / 2 + 1);
+  return fen;
 }
 
 const initialState = {
   fen: initialFen,
   board: full_board(initialFen),
+  all_moves: [],
   notations: notations,
   move: "w",
+  move_count: 0,
   white_bottom: true,
   game_over: false,
 };
@@ -92,14 +114,21 @@ function reducer(state, action) {
       return { ...state, board: board };
     case "MakeMove":
       board = make_move([...state.board], action.piece.square);
-      const sf = board2fen(board);
       const move = state.move === "w" ? "b" : "w";
+      const move_count = state.move_count + 1;
+      const sf = board2fen(board, move, move_count);
       if (in_check(board, move)) {
         var king = find_king(board, move);
         king = state.board[king.x][king.y];
         king.in_check = true;
       }
-      return { ...state, board: board, fen: sf, move: move };
+      return {
+        ...state,
+        board: board,
+        fen: sf,
+        move: move,
+        move_count: move_count,
+      };
     default:
       return state;
   }

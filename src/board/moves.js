@@ -1,4 +1,4 @@
-import { in_check } from "./check";
+import { can_castle, in_check } from "./check";
 
 function check(board, x, y, dx, dy) {
   var i = x + dx;
@@ -47,8 +47,9 @@ const piece_moves = {
 function clear_highlight(board) {
   for (var i = 0; i < 8; i++) {
     for (var j = 0; j < 8; j++) {
-      board[i][j].highlight = false;
-      board[i][j].in_check = false;
+      const piece = board[i][j];
+      piece.highlight = false;
+      piece.in_check = false;
     }
   }
   return board;
@@ -104,7 +105,7 @@ export function get_pawn_move(board, x, y, c = false) {
     if (x === 0 || x === 7) {
       break;
     }
-    if (!board[x + forward][y].empty) {
+    if (!board[x + forward * i][y].empty) {
       break;
     }
     legal_moves.push([x + forward * i, y]);
@@ -152,37 +153,13 @@ export function get_king_move(board, x, y, c = false) {
   const d = [-1, 1, 0];
   const piece = board[x][y];
   const color = piece.color;
-  const first_rank = piece.color === "w" ? 7 : 0;
 
-  if (x === first_rank && piece.not_moved && !piece.in_check && !c) {
-    const rook_corrs = [0, 7];
-    for (const i of rook_corrs) {
-      const dir = i === 0 ? -1 : 1;
-      const rook = board[x][i];
-
-      if (rook.not_moved && rook.piece.toLowerCase() === "r") {
-        var j = y;
-        var not_check_count = 0;
-        while (j !== i) {
-          if (j !== y) {
-            const p = board[x][j];
-            if (p.empty) {
-              if (j !== 1) {
-                var clone = structuredClone(board);
-                clone = make_move(clone, { x: x, y: j }, false, { x: x, y: y });
-                if (in_check(clone, color)) {
-                  break;
-                } else {
-                  not_check_count++;
-                }
-              }
-            }
-          }
-          j += dir;
-        }
-        if (not_check_count === 2) {
-          legal_moves.push([x, y + dir * 2]);
-        }
+  if (!c) {
+    const casling_rights = can_castle(board, color);
+    const king_dest = { queenside: 3, kingside: 6 };
+    for (const side in casling_rights) {
+      if (casling_rights[side]) {
+        legal_moves.push([x, king_dest[side]]);
       }
     }
   }
@@ -233,7 +210,6 @@ export function get_legal_moves(board, piece) {
 
   return legal_moves;
 }
-
 export function show_legal_moves(board, piece) {
   const legal_moves = get_legal_moves(board, piece);
   for (const c of legal_moves) {
