@@ -43,9 +43,12 @@ function get_color(light, theme) {
 
 function PieceImg({ piece }) {
   const { theme } = useContext(AppContext);
-  const path = `${
-    process.env.PUBLIC_URL
-  }/Images/pieces/${theme.toLowerCase()}/${piece.color.toLowerCase()}${piece.piece.toUpperCase()}.png`;
+  // const path = `${
+  //   process.env.PUBLIC_URL
+  // }/Images/pieces/${theme.toLowerCase()}/${piece.color.toLowerCase()}${piece.piece.toUpperCase()}.png`;
+  const path = `https://raw.githubusercontent.com/BibekBhusal0/Chess/main/public/Images/pieces/${theme.toLowerCase()}/${
+    piece.color.toLowerCase() + piece.piece.toUpperCase()
+  }.png`;
   return (
     <img
       src={path}
