@@ -65,42 +65,44 @@ export function in_check(board, color) {
   }
   return false;
 }
-export function can_castle(board, color) {
+export function can_castle(board, color, c = false) {
   const castle = { kingside: false, queenside: false };
   const rook_side = { 0: "queenside", 7: "kingside" };
   const king_coor = find_king([...board], color);
   const king = board[king_coor.x][king_coor.y];
-  if (
-    king.not_moved &&
-    king.piece.toLowerCase() === "k" &&
-    !in_check(board, color)
-  ) {
+  if (king.not_moved && king.piece.toLowerCase() === "k") {
     for (var rook_y in rook_side) {
       rook_y = parseInt(rook_y);
       const dir = rook_y === 0 ? -1 : 1;
       const rook = board[king_coor.x][rook_y];
       if (rook.not_moved && rook.piece.toLowerCase() === "r") {
-        var i = king_coor.y;
-        var not_check_count = 0;
-        while (i !== rook_y) {
-          if (i !== king_coor.y) {
-            const p = board[king_coor.x][i];
-            if (p.empty) {
-              if (i !== 1) {
-                var clone = structuredClone(board);
-                clone = make_move(clone, { x: king_coor.x, y: i }, false, {
-                  x: king_coor.x,
-                  y: king_coor.y,
-                });
-                if (in_check(clone, color)) {
-                  break;
-                } else {
-                  not_check_count++;
+        if (c) {
+          castle[rook_side[rook_y]] = true;
+          continue;
+        }
+        if (!in_check(board, color)) {
+          var i = king_coor.y;
+          var not_check_count = 0;
+          while (i !== rook_y) {
+            if (i !== king_coor.y) {
+              const p = board[king_coor.x][i];
+              if (p.empty) {
+                if (i !== 1) {
+                  var clone = structuredClone(board);
+                  clone = make_move(clone, { x: king_coor.x, y: i }, false, {
+                    x: king_coor.x,
+                    y: king_coor.y,
+                  });
+                  if (in_check(clone, color)) {
+                    break;
+                  } else {
+                    not_check_count++;
+                  }
                 }
               }
             }
+            i += dir;
           }
-          i += dir;
         }
         if (not_check_count === 2) {
           castle[rook_side[rook_y]] = true;

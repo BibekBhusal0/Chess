@@ -75,7 +75,7 @@ export function board2fen(board, move = "w", move_count = 1) {
   fen += " " + move;
   var cas = " ";
   for (const color of ["w", "b"]) {
-    const castle = can_castle(board, color);
+    const castle = can_castle(board, color, true);
     for (const c in castle) {
       const ucase = (x) => x.toUpperCase();
       const lcase = (x) => x.toLowerCase();
@@ -98,7 +98,7 @@ const initialState = {
   all_moves: [],
   notations: notations,
   move: "w",
-  move_count: 1,
+  move_count: 0,
   user: "w",
   white_bottom: true,
   game_over: false,

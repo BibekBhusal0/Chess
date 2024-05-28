@@ -40,7 +40,7 @@ function JustBoard() {
 
   useEffect(() => {
     const fetch_move = async () => {
-      const fen = board2fen(board, move);
+      const fen = board2fen(board, move, move_count);
       const response = await get_best_move(fen);
       if (response.success) {
         const move = response.bestmove.slice(9, 14);
@@ -53,7 +53,7 @@ function JustBoard() {
         });
       }
     };
-    if (move_count !== 1) {
+    if (move_count !== 0) {
       fetch_move();
     }
   }, [move_count, dispatch]);
