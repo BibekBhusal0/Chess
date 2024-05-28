@@ -182,7 +182,7 @@ export function get_king_move(board, x, y, c = false) {
 
   if (!c) {
     const casling_rights = can_castle(board, color);
-    const king_dest = { queenside: 3, kingside: 6 };
+    const king_dest = { queenside: 2, kingside: 6 };
     for (const side in casling_rights) {
       if (casling_rights[side]) {
         legal_moves.push([x, king_dest[side]]);

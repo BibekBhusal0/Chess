@@ -3,13 +3,11 @@ import ChessBoard from "./board";
 import LeftPanel from "./ui/left_panal";
 import RightPanel from "./ui/right_panel";
 import { initialState, reducer } from "./board/reducers";
-
 export const all_themes = [
   "Ocen",
-  "Wood",
   "Cosmos",
   "Dash",
-  "default",
+  "Default",
   "Glass",
   "Nature",
 ];

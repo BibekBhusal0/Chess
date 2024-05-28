@@ -16,16 +16,17 @@ function Rank({ pieces }) {
 
 function Notation({ horizontal }) {
   const {
-    state: { notations },
+    state: { notations, white_bottom },
   } = useContext(BoardContext);
   const list = horizontal ? notations[1] : notations[0];
-  const c = horizontal ? "w-full" : "h-full";
+  const dim = horizontal ? "w-full" : "h-full";
+  const rot = white_bottom ? "" : "rotate-180";
   const direction = horizontal ? "flex-row text-center" : "flex-col pt-2";
   return (
     <div className={`flex  ${direction}`}>
       {list.map((letter) => (
-        <div key={letter} className={c}>
-          {letter}
+        <div key={letter} className={dim}>
+          <div className={rot}>{letter}</div>
         </div>
       ))}
     </div>
@@ -34,7 +35,7 @@ function Notation({ horizontal }) {
 
 function JustBoard() {
   const {
-    state: { board, move_count, move },
+    state: { board, move_count, move, user },
     dispatch,
   } = useContext(BoardContext);
 
@@ -53,10 +54,10 @@ function JustBoard() {
         });
       }
     };
-    if (move_count !== 0) {
+    if (move !== user) {
       fetch_move();
     }
-  }, [move_count, dispatch]);
+  }, [move_count, dispatch, user]);
 
   return (
     <div className="p-2">
@@ -69,14 +70,19 @@ function JustBoard() {
 
 function ChessBoard() {
   const { ShowEval, ShowNotation } = useContext(AppContext);
+  const {
+    state: { white_bottom },
+  } = useContext(BoardContext);
   return (
-    <div className="col-span-5">
-      <div className="flex">
-        {ShowEval && <div></div>}
-        {ShowNotation && <Notation horizontal={false} />}
-        <JustBoard />
+    <div className={`col-span-5`}>
+      <div className={white_bottom ? "" : "rotate-180"}>
+        <div className="flex">
+          {ShowEval && <div></div>}
+          {ShowNotation && <Notation horizontal={false} />}
+          <JustBoard />
+        </div>
+        {ShowNotation && <Notation horizontal={true} />}
       </div>
-      {ShowNotation && <Notation horizontal={true} />}
     </div>
   );
 }

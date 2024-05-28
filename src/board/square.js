@@ -22,6 +22,8 @@ export const classes = [
   "bg-glass-light",
   "bg-glass-dark",
 ];
+export const im_path =
+  "https://raw.githubusercontent.com/BibekBhusal0/Chess/main/public/Images";
 
 export const piece_names = {
   p: "pawn",
@@ -43,16 +45,21 @@ function get_color(light, theme) {
 
 function PieceImg({ piece }) {
   const { theme } = useContext(AppContext);
+  const {
+    state: { white_bottom },
+  } = useContext(BoardContext);
   // const path = `${
   //   process.env.PUBLIC_URL
   // }/Images/pieces/${theme.toLowerCase()}/${piece.color.toLowerCase()}${piece.piece.toUpperCase()}.png`;
-  const path = `https://raw.githubusercontent.com/BibekBhusal0/Chess/main/public/Images/pieces/${theme.toLowerCase()}/${
+  const path = `${im_path}/pieces/${theme.toLowerCase()}/${
     piece.color.toLowerCase() + piece.piece.toUpperCase()
   }.png`;
   return (
     <img
       src={path}
-      className="hover:scale-105 transition-all p-1  z-20 "
+      className={`hover:scale-105 transition-all p-1  z-20 w-full ${
+        white_bottom ? "" : "rotate-180"
+      }`}
       alt={`${c[piece.color]} ${piece_names[piece.piece.toLowerCase()]}`}
     />
   );
@@ -110,5 +117,4 @@ function Square({ piece }) {
     </div>
   );
 }
-
 export default Square;

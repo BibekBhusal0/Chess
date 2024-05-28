@@ -39,7 +39,6 @@ module.exports = {
           light: "#D9C9BE",
           dark: "#B29B87",
         },
-
         wood: {
           light: "#BEA481",
           dark: "#73533A",

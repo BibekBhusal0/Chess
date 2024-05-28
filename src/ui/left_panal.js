@@ -19,11 +19,11 @@ function LeftPanel() {
     setHighlightMoves,
   } = useContext(AppContext);
   return (
-    <div className=" col-span-3 pr-3 border-r-8">
+    <div className=" col-span-3 border-r-8">
       <div className="text-xl pb-11">
         Just left panel (not complete yet) all functions may not be working
       </div>
-      <div className=" border-b-4 pb-10">
+      <div className=" border-b-4 pb-10 pr-3">
         <ToggleSwitch
           bool={ShowNotation}
           changeBool={setShowNotation}
@@ -69,10 +69,6 @@ function LeftPanel() {
           <li className=" text-lg">
             Useless Draw rules like 3 fold repetition, insufficient checkmate
             material, 50 move rule
-          </li>
-
-          <li className=" text-lg">
-            Chosing color against stockfish and board flip
           </li>
           <li className=" text-lg">Chess Notations </li>
           <li className=" text-lg">

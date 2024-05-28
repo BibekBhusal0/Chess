@@ -92,9 +92,10 @@ export function board2fen(board, move = "w", move_count = 1) {
   fen += ` - 0 ${move_count}`;
   return fen;
 }
+export const initialBoard = () => full_board(initialFen);
 
 const initialState = {
-  board: full_board(initialFen),
+  board: initialBoard(),
   all_moves: [],
   notations: notations,
   move: "w",
@@ -147,6 +148,31 @@ function reducer(state, action) {
         king.in_check = true;
       }
       return { ...state, board: board, move: move };
+    case "ChangeColor":
+      const user = state.user === "w" ? "b" : "w";
+      var white_bottom = user === "w" ? true : false;
+      return {
+        ...state,
+        board: initialBoard(),
+        user: user,
+        white_bottom: white_bottom,
+        game_over: false,
+        move_count: 0,
+        all_moves: [],
+        move: "w",
+      };
+    case "ResetBoard":
+      return {
+        ...state,
+        board: initialBoard(),
+        game_over: false,
+        move_count: 0,
+        all_moves: [],
+        move: "w",
+      };
+    case "FlipBoard":
+      white_bottom = !state.white_bottom;
+      return { ...state, white_bottom: white_bottom };
 
     default:
       return state;
