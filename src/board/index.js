@@ -39,11 +39,12 @@ function JustBoard() {
     state: { board, move_count, move, user, game_over },
     dispatch,
   } = useContext(BoardContext);
+  const { depth } = useContext(AppContext);
 
   useEffect(() => {
     const fetch_move = async () => {
       const fen = board2fen(board, move, move_count);
-      const response = await get_best_move(fen);
+      const response = await get_best_move(fen, depth);
       if (response.success) {
         const move = response.bestmove.slice(9, 14);
         const p = move.slice(0, 2);
@@ -62,7 +63,7 @@ function JustBoard() {
   }, [move_count, dispatch, user]);
 
   return (
-    <div className="p-2 ">
+    <div className="p-2">
       {board.map((pieces, index) => (
         <Rank key={index} pieces={pieces} />
       ))}
@@ -75,6 +76,7 @@ function ChessBoard() {
   const {
     state: { white_bottom },
   } = useContext(BoardContext);
+
   return (
     <div className="col-span-5 p-1 flex">
       {ShowEval && <EvalBar />}

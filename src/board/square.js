@@ -3,24 +3,26 @@ import { AppContext } from "../App";
 import { BoardContext } from "../App";
 
 export const classes = [
-  "bg-wood-light",
-  "bg-wood-dark",
+  "bg-cosmos-light",
+  "bg-cosmos-dark",
   "bg-dash-light",
   "bg-dash-dark",
   "bg-default-light",
   "bg-default-dark",
-  "bg-crazy-light",
-  "bg-crazy-dark",
-  "bg-cosmos-light",
-  "bg-cosmos-dark",
-  "bg-icy-sea-light",
-  "bg-icy-sea-dark",
-  "bg-ocen-light",
-  "bg-ocen-dark",
-  "bg-nature-light",
-  "bg-nature-dark",
+  "bg-geometric-light",
+  "bg-geometric-dark",
   "bg-glass-light",
   "bg-glass-dark",
+  "bg-light-light",
+  "bg-light-dark",
+  "bg-marble-light",
+  "bg-marble-dark",
+  "bg-nature-light",
+  "bg-nature-dark",
+  "bg-ocen-light",
+  "bg-ocen-dark",
+  "bg-wood-light",
+  "bg-wood-dark",
 ];
 export const im_path =
   "https://raw.githubusercontent.com/BibekBhusal0/Chess/main/public/Images";

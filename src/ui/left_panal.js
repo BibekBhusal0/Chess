@@ -53,7 +53,6 @@ function SideBar({ show }) {
       <div id="StockfishSettings" className=" border-b-4 py-5">
         <div className={padding}>
           <div className=" text-2xl font-bold pb-4">
-            {" "}
             Stockfish Settings
             <div className=" text-sm">
               Note: These Settings Does Not work it's

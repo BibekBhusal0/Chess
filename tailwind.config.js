@@ -11,37 +11,41 @@ module.exports = {
           light: "#78818A",
           dark: "#565E68",
         },
-        crazy: {
-          light: "#BEA481",
-          dark: "#73533A",
-        },
         dash: {
-          light: "#565E68",
-          dark: "#633323",
+          light: "#EDF3F4",
+          dark: "#7e8a99",
         },
         default: {
-          light: "#BEA481",
-          dark: "#73533A",
+          light: "#dbbc95",
+          dark: "#7f623b",
         },
         glass: {
-          light: "#687387",
-          dark: "#2A313E",
+          light: "#DCDCDC",
+          dark: "#6e7c7f",
         },
-        "icy-sea": {
+        ocen: {
           light: "#D5E0E6",
           dark: "#7FA0B5",
         },
         nature: {
-          light: "#BBCC91",
-          dark: "#AAB78C",
-        },
-        ocen: {
-          light: "#D9C9BE",
-          dark: "#B29B87",
+          light: "#d3e5a5",
+          dark: "#74997b",
         },
         wood: {
           light: "#BEA481",
           dark: "#73533A",
+        },
+        geometric: {
+          light: "#C7C3AB",
+          dark: "#77534c",
+        },
+        marble: {
+          light: "#C8B97E",
+          dark: "#32674A",
+        },
+        light: {
+          light: "#a3b1cc",
+          dark: "#575c66",
         },
       },
       backgroundImage: {
