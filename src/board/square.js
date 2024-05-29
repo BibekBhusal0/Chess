@@ -86,18 +86,20 @@ function Highlight({ check }) {
 
 function Square({ piece }) {
   const {
-    state: { user },
+    state: { user, game_over },
     dispatch,
   } = useContext(BoardContext);
   const { theme } = useContext(AppContext);
   const { ShowLegalMoves, HighlightMoves } = useContext(AppContext);
   const handle_click = () => {
-    if (piece.showing_legal) {
-      dispatch({ type: "MakeMove", piece: piece });
-    } else if (piece.empty) {
-      dispatch({ type: "HideMoves" });
-    } else if (piece.color === user) {
-      dispatch({ type: "ShowMoves", piece: piece });
+    if (!game_over) {
+      if (piece.showing_legal) {
+        dispatch({ type: "MakeMove", piece: piece });
+      } else if (piece.empty) {
+        dispatch({ type: "HideMoves" });
+      } else if (piece.color === user) {
+        dispatch({ type: "ShowMoves", piece: piece });
+      }
     }
   };
   return (

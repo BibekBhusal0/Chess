@@ -20,7 +20,7 @@ function LeftPanel() {
   } = useContext(AppContext);
   return (
     <div className=" col-span-3 border-r-8">
-      <div className="text-xl pb-11">
+      <div className="text-xl pb-6 border-b-8 border-blue-500">
         Just left panel (not complete yet) all functions may not be working
       </div>
       <div className=" border-b-4 pb-10 pr-3">
@@ -59,7 +59,6 @@ function LeftPanel() {
       <div className="text-xl pb-11 border-t-4">
         Functions yet to add
         <ol className="list-decimal pl-4 pt-2">
-          <li className=" text-lg">Checkmate and stalemate</li>
           <li className=" text-lg">Piece promotions</li>
           <li className=" text-lg"> Stock fish be able to take enpassant</li>
           <li className=" text-lg">Eval Bar and other stockfish settings </li>

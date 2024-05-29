@@ -2,6 +2,7 @@ import {
   get_bishop_move,
   get_king_move,
   get_knight_move,
+  get_legal_moves,
   get_pawn_move,
   get_queen_move,
   get_rook_move,
@@ -23,7 +24,6 @@ function get_all_pieces(board, color) {
   for (var i = 0; i < 8; i++) {
     for (var j = 0; j < 8; j++) {
       const sq = board[i][j];
-
       if (sq.color === color && !sq.empty) {
         pieces.push([i, j]);
       }
@@ -39,7 +39,6 @@ const piece_controls = {
   q: get_queen_move,
   k: get_king_move,
 };
-
 function get_all_controls(board, color) {
   const controls = [];
   const pieces = get_all_pieces(board, color);
@@ -113,8 +112,12 @@ export function can_castle(board, color, c = false) {
 
   return castle;
 }
-
-// export function mate(board, color)
-// {
-
-// }
+export function in_mate(board, color) {
+  const pieces = get_all_pieces(board, color);
+  const all_legal_moves = [];
+  for (const piece of pieces) {
+    const legal_moves = get_legal_moves(board, board[piece[0]][piece[1]]);
+    all_legal_moves.push(...legal_moves);
+  }
+  return all_legal_moves.length === 0;
+}

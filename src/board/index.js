@@ -35,7 +35,7 @@ function Notation({ horizontal }) {
 
 function JustBoard() {
   const {
-    state: { board, move_count, move, user },
+    state: { board, move_count, move, user, game_over },
     dispatch,
   } = useContext(BoardContext);
 
@@ -54,7 +54,7 @@ function JustBoard() {
         });
       }
     };
-    if (move !== user) {
+    if (move !== user && !game_over) {
       fetch_move();
     }
   }, [move_count, dispatch, user]);

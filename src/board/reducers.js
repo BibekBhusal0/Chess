@@ -1,4 +1,4 @@
-import { can_castle, find_king, in_check } from "./check";
+import { can_castle, find_king, in_check, in_mate } from "./check";
 import { hide_legal_moves, make_move, show_legal_moves } from "./moves";
 
 const sq_n = "abcdefgh".split("");
@@ -92,9 +92,32 @@ export function board2fen(board, move = "w", move_count = 1) {
   fen += ` - 0 ${move_count}`;
   return fen;
 }
+export function check_over(board, move_color) {
+  var check = in_check(board, move_color);
+  var mate = in_mate(board, move_color);
+  var game_over = false;
+  var game_over_by = null;
+  var winner = null;
+
+  if (check) {
+    var king = find_king(board, move_color);
+    king = board[king.x][king.y];
+    king.in_check = true;
+  }
+  if (mate) {
+    game_over = true;
+    if (check) {
+      winner = move_color === "w" ? "b" : "w";
+      game_over_by = "Checkmate";
+    } else {
+      game_over_by = "Stalemate";
+    }
+  }
+  return [game_over, game_over_by, winner];
+}
 export const initialBoard = () => full_board(initialFen);
 
-const initialState = {
+const initS = {
   board: initialBoard(),
   all_moves: [],
   notations: notations,
@@ -103,9 +126,12 @@ const initialState = {
   user: "w",
   white_bottom: true,
   game_over: false,
+  game_over_by: null,
+  winner: null,
 };
+export const initialState = structuredClone(initS);
 
-function reducer(state, action) {
+export function reducer(state, action) {
   switch (action.type) {
     case "ShowMoves":
       var piece = action.piece;
@@ -122,18 +148,17 @@ function reducer(state, action) {
     case "MakeMove":
       board = make_move([...state.board], action.piece.square);
       const move_count = state.move_count + 1;
-
       var move = state.move === "w" ? "b" : "w";
-      if (in_check(board, move)) {
-        var king = find_king(board, move);
-        king = state.board[king.x][king.y];
-        king.in_check = true;
-      }
+      var [game_over, game_over_by, winner] = check_over(board, move);
+
       return {
         ...state,
         board: board,
         move: move,
         move_count: move_count,
+        game_over: game_over,
+        game_over_by: game_over_by,
+        winner: winner,
       };
     case "ComputerMove":
       piece = action.piece;
@@ -142,33 +167,28 @@ function reducer(state, action) {
       square = { x: square[0], y: square[1] };
       board = make_move([...state.board], square, true, piece);
       move = state.move === "w" ? "b" : "w";
-      if (in_check(board, move)) {
-        king = find_king(board, move);
-        king = state.board[king.x][king.y];
-        king.in_check = true;
-      }
-      return { ...state, board: board, move: move };
+      [game_over, game_over_by, winner] = check_over(board, move);
+      return {
+        ...state,
+        board: board,
+        game_over: game_over,
+        game_over_by: game_over_by,
+        winner: winner,
+        move: move,
+      };
     case "ChangeColor":
       const user = state.user === "w" ? "b" : "w";
       var white_bottom = user === "w" ? true : false;
       return {
-        ...state,
-        board: initialBoard(),
+        ...structuredClone(initS),
         user: user,
         white_bottom: white_bottom,
-        game_over: false,
-        move_count: 0,
-        all_moves: [],
-        move: "w",
       };
     case "ResetBoard":
       return {
-        ...state,
-        board: initialBoard(),
-        game_over: false,
-        move_count: 0,
-        all_moves: [],
-        move: "w",
+        ...structuredClone(initS),
+        user: state.user,
+        white_bottom: state.white_bottom,
       };
     case "FlipBoard":
       white_bottom = !state.white_bottom;
@@ -178,5 +198,3 @@ function reducer(state, action) {
       return state;
   }
 }
-
-export { initialState, reducer };
