@@ -1,7 +1,7 @@
 function Selection({ options, setValue, Val, title }) {
   return (
-    <div className="flex gap-7">
-      <div className="text-xl">{title}</div>
+    <div className="grid grid-cols-3 py-2 align-middle">
+      <div className="text-xl col-span-2">{title}</div>
       <div className="text-lg">
         <select
           name="select"

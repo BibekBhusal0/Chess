@@ -3,6 +3,7 @@ import ChessBoard from "./board";
 import LeftPanel from "./ui/left_panal";
 import RightPanel from "./ui/right_panel";
 import { initialState, reducer } from "./board/reducers";
+import Footer from "./ui/footer";
 export const all_themes = [
   "Ocen",
   "Cosmos",
@@ -24,31 +25,32 @@ function App() {
   const [HighlightMoves, setHighlightMoves] = useState(true);
 
   return (
-    <AppContext.Provider
-      value={{
-        ShowEval,
-        setShowEval,
-        ShowNotation,
-        setShowNotation,
-        depth,
-        setDepth,
-        ShowLegalMoves,
-        setShowLegalMoves,
-        HighlightMoves,
-        setHighlightMoves,
-        theme,
-        setTheme,
-      }}>
-      {/* header if i keep it */}
-      <div className="grid grid-cols-10 p-3 gap-3">
-        <LeftPanel />
-        <BoardContext.Provider value={{ state, dispatch }}>
-          <ChessBoard />
-          <RightPanel />
-        </BoardContext.Provider>
-      </div>
-      {/* footer */}
-    </AppContext.Provider>
+    <>
+      <AppContext.Provider
+        value={{
+          ShowEval,
+          setShowEval,
+          ShowNotation,
+          setShowNotation,
+          depth,
+          setDepth,
+          ShowLegalMoves,
+          setShowLegalMoves,
+          HighlightMoves,
+          setHighlightMoves,
+          theme,
+          setTheme,
+        }}>
+        <div className="grid lg:grid-cols-10 grid-cols-5 gap-3">
+          <LeftPanel />
+          <BoardContext.Provider value={{ state, dispatch }}>
+            <ChessBoard />
+            <RightPanel />
+          </BoardContext.Provider>
+        </div>
+      </AppContext.Provider>
+      <Footer />
+    </>
   );
 }
 

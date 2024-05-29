@@ -74,7 +74,7 @@ function ChessBoard() {
     state: { white_bottom },
   } = useContext(BoardContext);
   return (
-    <div className={`col-span-5`}>
+    <div className={`col-span-5 p-1`}>
       <div className={white_bottom ? "" : "rotate-180"}>
         <div className="flex">
           {ShowEval && <div></div>}

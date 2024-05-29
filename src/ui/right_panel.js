@@ -13,7 +13,7 @@ function ButtonWithIcon({ icon, text, onClick }) {
 
   return (
     <button
-      className="flex gap-2 justify-center align-middle m-2 p-2 border-2 col-span-2 border-blue-600 text-blue-700 rounded-md font-bold transition-all hover:border-transparent hover:text-white hover:bg-blue-600"
+      className="flex justify-center align-middle font-bold my-2 p-2 border-2 rounded-md col-span-2 border-blue-600 text-blue-700 transition-all hover:border-transparent hover:text-white hover:bg-blue-600"
       onClick={clickHandelr}>
       <div className={`text-2xl transition-all ease-out duration-700 ${t}`}>
         {icon}
@@ -28,7 +28,7 @@ function RightPanel() {
     state: { move, user, game_over, game_over_by, winner },
     dispatch,
   } = useContext(BoardContext);
-  const padding = "pl-3";
+  const padding = " lg:px-3 sm:px-20 px-3 ";
   const color = user === "w" ? "White" : "Black";
   const opp_color = user === "w" ? "Black" : "White";
   const t1 = game_over
@@ -47,40 +47,40 @@ function RightPanel() {
       ? "bg-pink-50 text-gray-700 border-gray-700 hover:text-white hover:bg-gray-800 hover:border-transparent"
       : "text-white bg-gray-800 border-transparent hover:text-gray-900 hover:bg-white hover:border-gray-900 ";
   return (
-    <div className=" col-span-2 border-l-4 p-2 pl-0 ">
-      <div className={`border-b-4 pb-4 mb-4 ${padding}`}>
-        <div className="text-2xl font-bold">{t1}</div>
-        <div className="text-xl">{t2}</div>
-        <button
-          onClick={() => dispatch({ type: "ChangeColor" })}
-          className={`font-bold text-center w-full cursor-pointer py-1 text-xl transition-all ease-out pink mt-2 rounded-md border-2 ${button_styles}`}>
-          Play as {opp_color}
-        </button>
-        <div className=" grid grid-cols-2">
-          <ButtonWithIcon
-            icon={<PiDeviceRotateFill />}
-            text="Flip Board"
-            onClick={() => dispatch({ type: "FlipBoard" })}
-          />
-          <ButtonWithIcon
-            icon={<BiReset />}
-            text={"New Game"}
-            onClick={() => dispatch({ type: "ResetBoard" })}
-          />
+    <div className="lg:col-span-3 lg:border-l-8 border-t-8 border-t-gray-600 lg:border-t-0 col-span-5 text-center">
+      <div
+        id="Basic settings and information"
+        className={`border-b-4 py-4 ${padding}`}>
+        <div className="lg:text-2xl text-lg pb-10">
+          <div className=" font-bold">{t1}</div>
+          {t2}
+        </div>
+        <div>
+          <div id="buttons">
+            <button
+              onClick={() => dispatch({ type: "ChangeColor" })}
+              className={`font-bold text-center lg:text-2xl text-lg w-full cursor-pointer p-3 border-2  transition-all ease-out rounded-md  ${button_styles}`}>
+              Play as {opp_color}
+            </button>
+          </div>
+          <div className=" grid ">
+            <ButtonWithIcon
+              icon={<PiDeviceRotateFill />}
+              text="Flip Board"
+              onClick={() => dispatch({ type: "FlipBoard" })}
+            />
+            <ButtonWithIcon
+              icon={<BiReset />}
+              text={"New Game"}
+              onClick={() => dispatch({ type: "ResetBoard" })}
+            />
+          </div>
         </div>
       </div>
-      <div className={`border-b-4 ${padding}`}>
-        <div className="pb-40">Pice notations will be here</div>
-      </div>
-
-      <div className={`mt-4 ${padding}`}>
-        <div>Plan to move this section to footer</div>
-        Credits to API: <br />
-        <a href="https://stockfish.online/"> Stockfish </a>
-        <br />
-        <br />
-        Credits to pieces: <br />
-        <a href="https://github.com/lichess-org/lila"> Lichess github</a>
+      <div id="notations" className={`text-center  ${padding}`}>
+        <div className=" pb-60 text-2xl overflow-auto w-full">
+          <div className=" font-bold">Pice notations will be here</div>
+        </div>
       </div>
     </div>
   );

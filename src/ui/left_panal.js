@@ -1,9 +1,12 @@
-import { useContext } from "react";
+import { useContext, useState } from "react";
 import Selection from "./select";
 import { AppContext, all_themes } from "../App";
 import ToggleSwitch from "./toggle_switch";
+import { IoCloseSharp, IoMenu } from "react-icons/io5";
 
-function LeftPanel() {
+function SideBar({ show }) {
+  const padding = "lg:px-3 px-3 sm:px-10";
+
   const {
     ShowEval,
     setShowEval,
@@ -19,62 +22,74 @@ function LeftPanel() {
     setHighlightMoves,
   } = useContext(AppContext);
   return (
-    <div className=" col-span-3 border-r-8">
-      <div className="text-xl pb-6 border-b-8 border-blue-500">
-        Just left panel (not complete yet) all functions may not be working
+    <div className={`${show ? "block" : "hidden"}  lg:block`}>
+      <div id="GeneralSettings" className="border-b-4 py-4">
+        <div className={padding}>
+          <div className="text-2xl font-bold">General Settings</div>
+          <div>
+            <Selection
+              title={"Theme"}
+              options={all_themes}
+              setValue={setTheme}
+              Val={theme}></Selection>
+            <ToggleSwitch
+              bool={ShowNotation}
+              changeBool={setShowNotation}
+              title="Show Notation"
+            />
+            <ToggleSwitch
+              bool={ShowLegalMoves}
+              changeBool={setShowLegalMoves}
+              title="Show Legal Moves"
+            />
+            <ToggleSwitch
+              bool={HighlightMoves}
+              changeBool={setHighlightMoves}
+              title="Highlight Moves"
+            />
+          </div>
+        </div>
       </div>
-      <div className=" border-b-4 pb-10 pr-3">
-        <ToggleSwitch
-          bool={ShowNotation}
-          changeBool={setShowNotation}
-          title="Show Notation"
-        />
-        <ToggleSwitch
-          bool={ShowLegalMoves}
-          changeBool={setShowLegalMoves}
-          title="Show Legal Moves"
-        />
-        <ToggleSwitch
-          bool={HighlightMoves}
-          changeBool={setHighlightMoves}
-          title="Highlight Moves"
-        />
-        <Selection
-          title={"Theme"}
-          options={all_themes}
-          setValue={setTheme}
-          Val={theme}></Selection>
+
+      <div id="StockfishSettings" className=" border-b-4 py-5">
+        <div className={padding}>
+          <div className=" text-2xl font-bold pb-4">
+            {" "}
+            Stockfish Settings
+            <div className=" text-sm">
+              Note: These Settings Does Not work it's
+              <span className=" font-semibold"> Under Construction </span>
+            </div>
+          </div>
+          <Selection
+            title={"Depth"}
+            options={[15, 14, 13, 12, 11, 10]}
+            setValue={setDepth}
+            Val={depth}></Selection>
+          <ToggleSwitch
+            bool={ShowEval}
+            changeBool={setShowEval}
+            title="Evaluation Bar"
+          />
+        </div>
       </div>
-      <div className=" text-lg"> stockfish settings</div>
-      <Selection
-        title={"Depth"}
-        options={[15, 14, 13, 12, 11, 10]}
-        setValue={setDepth}
-        Val={depth}></Selection>
-      <ToggleSwitch
-        bool={ShowEval}
-        changeBool={setShowEval}
-        title="Evaluation Bar"
-      />
-      <div className="text-xl pb-11 border-t-4">
-        Functions yet to add
-        <ol className="list-decimal pl-4 pt-2">
-          <li className=" text-lg">Piece promotions</li>
-          <li className=" text-lg"> Stock fish be able to take enpassant</li>
-          <li className=" text-lg">Eval Bar and other stockfish settings </li>
-          <li className=" text-lg">
-            improve square color and chess pieces (themes)
-          </li>
-          <li className=" text-lg">
-            Useless Draw rules like 3 fold repetition, insufficient checkmate
-            material, 50 move rule
-          </li>
-          <li className=" text-lg">Chess Notations </li>
-          <li className=" text-lg">
-            Make website responsive for different screens
-          </li>
-        </ol>
+    </div>
+  );
+}
+
+function LeftPanel() {
+  const [show, setShow] = useState(false);
+  return (
+    <div className="col-span-5 lg:col-span-2 lg:border-r-8 ">
+      <div className="flex flex-row-reverse">
+        <button
+          className="lg:hidden text-4xl p-2 mb-0 mr-3 border-2 m-1"
+          onClick={() => setShow(!show)}
+          id="icon">
+          {show ? <IoCloseSharp /> : <IoMenu />}
+        </button>
       </div>
+      <SideBar show={show} />
     </div>
   );
 }
