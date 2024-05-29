@@ -1,13 +1,13 @@
 {
   "files": {
-    "main.css": "/Chess/static/css/main.e9a8c672.css",
-    "main.js": "/Chess/static/js/main.fc9a1994.js",
+    "main.css": "/Chess/static/css/main.ea6ff7ee.css",
+    "main.js": "/Chess/static/js/main.36df26fe.js",
     "index.html": "/Chess/index.html",
-    "main.e9a8c672.css.map": "/Chess/static/css/main.e9a8c672.css.map",
-    "main.fc9a1994.js.map": "/Chess/static/js/main.fc9a1994.js.map"
+    "main.ea6ff7ee.css.map": "/Chess/static/css/main.ea6ff7ee.css.map",
+    "main.36df26fe.js.map": "/Chess/static/js/main.36df26fe.js.map"
   },
   "entrypoints": [
-    "static/css/main.e9a8c672.css",
-    "static/js/main.fc9a1994.js"
+    "static/css/main.ea6ff7ee.css",
+    "static/js/main.36df26fe.js"
   ]
 }
