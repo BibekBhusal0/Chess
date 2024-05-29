@@ -4,17 +4,16 @@ function Footer() {
       <div>
         <div className="text-2xl font-semibold">Functions yet to add</div>
         <ol className="list-decimal pl-4 pt-2">
-          <li className=" text-lg">Piece promotions</li>
-          <li className=" text-lg"> Stock fish be able to take enpassant</li>
           <li className=" text-lg">Eval Bar and other stockfish settings </li>
+          <li className=" text-lg">Piece promotions</li>
           <li className=" text-lg">
-            improve square color and chess pieces (themes)
+            Improve square color and chess pieces (themes)
           </li>
+          <li className=" text-lg">Chess Notations </li>
           <li className=" text-lg">
             Useless Draw rules like 3 fold repetition, insufficient checkmate
             material, 50 move rule
           </li>
-          <li className=" text-lg">Chess Notations </li>
         </ol>
       </div>
       <div className=" text-gray-700 text-center font-thin">

@@ -41,7 +41,7 @@ function App() {
           theme,
           setTheme,
         }}>
-        <div className="grid lg:grid-cols-10 grid-cols-5 gap-3">
+        <div className="grid lg:grid-cols-10 grid-cols-5">
           <LeftPanel />
           <BoardContext.Provider value={{ state, dispatch }}>
             <ChessBoard />

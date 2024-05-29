@@ -50,7 +50,6 @@ function SideBar({ show }) {
           </div>
         </div>
       </div>
-
       <div id="StockfishSettings" className=" border-b-4 py-5">
         <div className={padding}>
           <div className=" text-2xl font-bold pb-4">

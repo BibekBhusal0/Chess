@@ -3,6 +3,7 @@ import Square from "./square";
 import { AppContext, BoardContext } from "../App";
 import { get_best_move } from "./moves";
 import { board2fen, notation2sq } from "./reducers";
+import EvalBar from "./EvalBar";
 
 function Rank({ pieces }) {
   return (
@@ -51,6 +52,7 @@ function JustBoard() {
           type: "ComputerMove",
           piece: notation2sq(p),
           square: notation2sq(sq),
+          evaluation: response.evaluation,
         });
       }
     };
@@ -60,7 +62,7 @@ function JustBoard() {
   }, [move_count, dispatch, user]);
 
   return (
-    <div className="p-2">
+    <div className="p-2 ">
       {board.map((pieces, index) => (
         <Rank key={index} pieces={pieces} />
       ))}
@@ -74,10 +76,10 @@ function ChessBoard() {
     state: { white_bottom },
   } = useContext(BoardContext);
   return (
-    <div className={`col-span-5 p-1`}>
+    <div className="col-span-5 p-1 flex">
+      {ShowEval && <EvalBar />}
       <div className={white_bottom ? "" : "rotate-180"}>
         <div className="flex">
-          {ShowEval && <div></div>}
           {ShowNotation && <Notation horizontal={false} />}
           <JustBoard />
         </div>
