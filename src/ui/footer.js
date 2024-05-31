@@ -4,11 +4,6 @@ function Footer() {
       <div>
         <div className="text-2xl font-semibold">Functions yet to add</div>
         <ol className="list-decimal pl-4 pt-2">
-          <li className=" text-lg">Eval Bar and other stockfish settings </li>
-          <li className=" text-lg">Piece promotions</li>
-          <li className=" text-lg">
-            Improve square color and chess pieces (themes)
-          </li>
           <li className=" text-lg">Chess Notations </li>
           <li className=" text-lg">
             Useless Draw rules like 3 fold repetition, insufficient checkmate
@@ -26,6 +21,14 @@ function Footer() {
           Have fun Playing Against Stockfish.
         </div>
         <div className="text-sm py-5">
+          Also see the
+          <a
+            className=" text-blue-400 hover:text-blue-600 hover:font-semibold transition-all hover:underline"
+            target="blank"
+            href="https://github.com/bibekbhusal0/chess">
+            Source Code
+          </a>
+          <br />
           Credits to API:
           <a
             href="https://stockfish.online/"

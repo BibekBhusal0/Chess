@@ -100,6 +100,7 @@ function Square({ piece }) {
       } else if (piece.empty) {
         dispatch({ type: "HideMoves" });
       } else if (piece.color === user) {
+        // } else {
         dispatch({ type: "ShowMoves", piece: piece });
       }
     }

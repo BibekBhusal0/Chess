@@ -186,7 +186,9 @@ const initS = {
   game_over_by: null,
   winner: null,
   evaluation: 0.0,
-  winChance: 50,
+  mate_chance: null,
+  promotion: false,
+  promotion_sq: null,
 };
 export const initialState = structuredClone(initS);
 
@@ -209,7 +211,15 @@ export function reducer(state, action) {
       const move_count = state.move_count + 1;
       var move = state.move === "w" ? "b" : "w";
       var [game_over, game_over_by, winner] = check_over(board, move);
-
+      var promotion = false;
+      var promotion_sq = null;
+      if (action.piece.piece.toLowerCase() === "p") {
+        const eightRank = action.piece.color === "w" ? 0 : 7;
+        if (action.piece.square.x === eightRank) {
+          promotion = true;
+          promotion_sq = action.piece.square;
+        }
+      }
       return {
         ...state,
         board,
@@ -218,6 +228,8 @@ export function reducer(state, action) {
         game_over,
         game_over_by,
         winner,
+        promotion,
+        promotion_sq,
       };
     case "ComputerMove":
       piece = action.piece;
@@ -227,9 +239,13 @@ export function reducer(state, action) {
       board = make_move([...state.board], square, true, piece);
       move = state.move === "w" ? "b" : "w";
       [game_over, game_over_by, winner] = check_over(board, move);
+      if (action.promotion !== " ") {
+        board[square.x][square.y].piece = action.promotion;
+      }
       return {
         ...state,
         evaluation: action.evaluation,
+        mate_chance: action.mate_chance,
         board,
         game_over,
         game_over_by,
@@ -253,6 +269,12 @@ export function reducer(state, action) {
     case "FlipBoard":
       white_bottom = !state.white_bottom;
       return { ...state, white_bottom };
+    case "Promote":
+      board = [...state.board];
+      board[state.promotion_sq.x][state.promotion_sq.y].piece = action.piece;
+      promotion = false;
+      promotion_sq = null;
+      return { ...state, board, promotion, promotion_sq };
 
     default:
       return state;

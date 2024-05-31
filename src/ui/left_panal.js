@@ -52,13 +52,7 @@ function SideBar({ show }) {
       </div>
       <div id="StockfishSettings" className=" border-b-4 py-5">
         <div className={padding}>
-          <div className=" text-2xl font-bold pb-4">
-            Stockfish Settings
-            <div className=" text-sm">
-              Note: These Settings Does Not work it's
-              <span className=" font-semibold"> Under Construction </span>
-            </div>
-          </div>
+          <div className=" text-2xl font-bold pb-4">Stockfish Settings</div>
           <Selection
             title={"Depth"}
             options={[15, 14, 13, 12, 11, 10]}
