@@ -186,6 +186,7 @@ const initS = {
   game_over_by: null,
   winner: null,
   evaluation: 0.0,
+  winChance: 50,
 };
 export const initialState = structuredClone(initS);
 
@@ -197,7 +198,7 @@ export function reducer(state, action) {
       if (!state.game_over && piece.color === state.move) {
         hide_legal_moves(board);
         board = show_legal_moves(board, piece);
-        return { ...state, board: board };
+        return { ...state, board };
       }
       return state;
     case "HideMoves":
@@ -211,12 +212,12 @@ export function reducer(state, action) {
 
       return {
         ...state,
-        board: board,
-        move: move,
-        move_count: move_count,
-        game_over: game_over,
-        game_over_by: game_over_by,
-        winner: winner,
+        board,
+        move,
+        move_count,
+        game_over,
+        game_over_by,
+        winner,
       };
     case "ComputerMove":
       piece = action.piece;
@@ -229,19 +230,19 @@ export function reducer(state, action) {
       return {
         ...state,
         evaluation: action.evaluation,
-        board: board,
-        game_over: game_over,
-        game_over_by: game_over_by,
-        winner: winner,
-        move: move,
+        board,
+        game_over,
+        game_over_by,
+        winner,
+        move,
       };
     case "ChangeColor":
       const user = state.user === "w" ? "b" : "w";
       var white_bottom = user === "w" ? true : false;
       return {
         ...structuredClone(initS),
-        user: user,
-        white_bottom: white_bottom,
+        user,
+        white_bottom,
       };
     case "ResetBoard":
       return {
@@ -251,7 +252,7 @@ export function reducer(state, action) {
       };
     case "FlipBoard":
       white_bottom = !state.white_bottom;
-      return { ...state, white_bottom: white_bottom };
+      return { ...state, white_bottom };
 
     default:
       return state;

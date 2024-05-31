@@ -54,7 +54,6 @@ function clear_highlight(board) {
   }
   return board;
 }
-
 export async function get_best_move(fen, depth = 15, retries = 5) {
   const api = "https://stockfish.online/api/s/v2.php";
   const req = `${api}?fen=${fen}&depth=${depth}`;
@@ -142,9 +141,13 @@ export function get_pawn_move(board, x, y, c = false) {
   }
   for (let j = 0; j < controls.length; j++) {
     const sq = board[controls[j][0]][controls[j][1]];
+    const side_sqr = board[x][controls[j][1]];
     if (
       (!sq.empty && sq.color !== piece.color) ||
-      (board[x][controls[j][1]].highlight && fifth_rank)
+      (side_sqr.highlight &&
+        fifth_rank &&
+        side_sqr.piece.toLowerCase() === "p" &&
+        !sq.highlight)
     ) {
       legal_moves.push([controls[j][0], controls[j][1]]);
     }
@@ -244,7 +247,6 @@ export function show_legal_moves(board, piece) {
   board[piece.square.x][piece.square.y].clicked = true;
   return board;
 }
-
 export function make_move(board, square, serious = true, piece_coor = null) {
   if (piece_coor === null) {
     piece_coor = search_piece(board);
@@ -254,10 +256,12 @@ export function make_move(board, square, serious = true, piece_coor = null) {
   if (piece.piece.toLowerCase() === "p") {
     const white = piece.color === "w";
     const fifth_rank = white ? 3 : 4;
-    if (piece_coor.x === fifth_rank && sq.empty) {
+    if (piece_coor.x === fifth_rank) {
       const eps = board[fifth_rank][square.y];
-      eps.empty = true;
-      eps.piece = "-";
+      if (eps.piece.toLowerCase() === "p" && square.y !== piece_coor.y) {
+        eps.empty = true;
+        eps.piece = "-";
+      }
     }
   }
   if (serious) {

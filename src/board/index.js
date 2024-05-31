@@ -1,8 +1,8 @@
 import { useContext, useEffect } from "react";
 import Square from "./square";
 import { AppContext, BoardContext } from "../App";
-import { get_best_move } from "./moves";
 import { board2fen, notation2sq } from "./reducers";
+import { get_best_move } from "./moves";
 import EvalBar from "./EvalBar";
 
 function Rank({ pieces }) {
@@ -42,25 +42,24 @@ function JustBoard() {
   const { depth } = useContext(AppContext);
 
   useEffect(() => {
-    const fetch_move = async () => {
-      const fen = board2fen(board, move, move_count);
-      const response = await get_best_move(fen, depth);
-      if (response.success) {
-        const move = response.bestmove.slice(9, 14);
-        const p = move.slice(0, 2);
-        const sq = move.slice(2, 4);
+    if (move !== user && !game_over) {
+      const fetch_move = async () => {
+        const fen = board2fen(board, move, move_count);
+        const response = await get_best_move(fen, depth);
+        console.log(response);
+        const sf_move = response.bestmove.slice(9, 14);
+        const p = sf_move.slice(0, 2);
+        const sq = sf_move.slice(2, 4);
         dispatch({
           type: "ComputerMove",
           piece: notation2sq(p),
           square: notation2sq(sq),
           evaluation: response.evaluation,
         });
-      }
-    };
-    if (move !== user && !game_over) {
+      };
       fetch_move();
     }
-  }, [move_count, dispatch, user]);
+  }, [move_count, dispatch, user, board, depth, game_over, move]);
 
   return (
     <div className="p-2">

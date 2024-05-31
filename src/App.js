@@ -24,7 +24,7 @@ function App() {
   const [state, dispatch] = useReducer(reducer, initialState);
   const [depth, setDepth] = useState(15);
   const [theme, setTheme] = useState("default");
-  const [ShowEval, setShowEval] = useState(false);
+  const [ShowEval, setShowEval] = useState(true);
   const [ShowNotation, setShowNotation] = useState(true);
   const [ShowLegalMoves, setShowLegalMoves] = useState(true);
   const [HighlightMoves, setHighlightMoves] = useState(true);

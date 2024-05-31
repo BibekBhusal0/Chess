@@ -5,23 +5,16 @@ function EvalBar() {
   const {
     state: { white_bottom, evaluation },
   } = useContext(BoardContext);
-  var eval_max = Math.floor(Math.abs(evaluation) / 10) * 10;
   const rot = white_bottom ? "" : "rotate-180";
-  eval_max += 10;
-  var eval_percent = 50;
-  if (evaluation !== 0) {
-    var eval_frac = evaluation / eval_max;
-    eval_frac += 1;
-    eval_percent = eval_frac * 50;
-  }
-  eval_percent = 100 - eval_percent;
+  const winChance =
+    50 + 50 * (2 / (1 + Math.exp(-0.00368208 * evaluation * 10)) - 1);
   return (
     <div
       id="evalbar"
       className={`h-full w-24 text-xs text-center relative border-red-600 border-2 mx-2 my-2 ${rot}`}>
       <div className=" bg-white h-full w-full "></div>
       <div
-        style={{ height: `${eval_percent}%` }}
+        style={{ height: `${100 - winChance}%` }}
         className="absolute bg-black w-full top-0 transition-all"></div>
       <div
         id="evalNum"

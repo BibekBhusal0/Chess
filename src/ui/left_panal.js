@@ -62,7 +62,7 @@ function SideBar({ show }) {
           <Selection
             title={"Depth"}
             options={[15, 14, 13, 12, 11, 10]}
-            setValue={setDepth}
+            setValue={(d) => setDepth(parseInt(d))}
             Val={depth}></Selection>
           <ToggleSwitch
             bool={ShowEval}
