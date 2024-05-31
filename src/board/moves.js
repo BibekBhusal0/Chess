@@ -54,7 +54,7 @@ function clear_highlight(board) {
   }
   return board;
 }
-export async function get_best_move(fen, depth = 15, retries = 5) {
+export async function get_best_move(fen, depth = 15, retries = 20) {
   const api = "https://stockfish.online/api/s/v2.php";
   const req = `${api}?fen=${fen}&depth=${depth}`;
 
@@ -247,18 +247,39 @@ export function show_legal_moves(board, piece) {
   board[piece.square.x][piece.square.y].clicked = true;
   return board;
 }
-export function make_move(board, square, serious = true, piece_coor = null) {
+export function make_move(
+  board,
+  square,
+  serious = true,
+  piece_coor = null,
+  notation_array = []
+) {
   if (piece_coor === null) {
     piece_coor = search_piece(board);
   }
   const piece = board[piece_coor.x][piece_coor.y];
   const sq = board[square.x][square.y];
+  var notation;
+  if (sq.empty) {
+    if (piece.piece.toUpperCase() === "P") {
+      notation = sq.notation;
+    } else {
+      notation = piece.piece.toUpperCase() + sq.notation;
+    }
+  } else {
+    if (piece.piece.toUpperCase() === "P") {
+      notation = piece.notation[0] + "x" + sq.notation;
+    } else {
+      notation = piece.piece.toUpperCase() + "x" + sq.notation;
+    }
+  }
   if (piece.piece.toLowerCase() === "p") {
     const white = piece.color === "w";
     const fifth_rank = white ? 3 : 4;
     if (piece_coor.x === fifth_rank) {
       const eps = board[fifth_rank][square.y];
       if (eps.piece.toLowerCase() === "p" && square.y !== piece_coor.y) {
+        notation = piece.notation[0] + "x" + sq.notation;
         eps.empty = true;
         eps.piece = "-";
       }
@@ -274,7 +295,7 @@ export function make_move(board, square, serious = true, piece_coor = null) {
       if (y_coor === 2 || y_coor === 6) {
         const init_y = y_coor === 6 ? 7 : 0;
         const final_y = y_coor === 6 ? 5 : 3;
-
+        notation = y_coor === 6 ? "O-O" : "O-O-O";
         make_move(
           board,
           {
@@ -289,6 +310,7 @@ export function make_move(board, square, serious = true, piece_coor = null) {
         );
       }
     }
+    notation_array.push(notation);
     board = clear_highlight(board);
 
     sq.highlight = true;

@@ -149,7 +149,7 @@ export function board2fen(board, move = "w", move_count = 1) {
   fen += ` 0 ${move_count}`;
   return fen;
 }
-export function check_over(board, move_color) {
+export function check_over(board, move_color, PGN = null) {
   var check = in_check(board, move_color);
   var mate = in_mate(board, move_color);
   var game_over = false;
@@ -160,6 +160,11 @@ export function check_over(board, move_color) {
     var king = find_king(board, move_color);
     king = board[king.x][king.y];
     king.in_check = true;
+    if (mate) {
+      PGN[PGN.length - 1] += "#";
+    } else {
+      PGN[PGN.length - 1] += "+";
+    }
   }
   if (mate) {
     game_over = true;
@@ -176,7 +181,8 @@ export const initialBoard = () => full_board(initialFen);
 
 const initS = {
   board: initialBoard(),
-  all_moves: [],
+  PGN: [],
+  fens: [],
   notations: notations,
   move: "w",
   move_count: 0,
@@ -207,10 +213,11 @@ export function reducer(state, action) {
       board = hide_legal_moves([...state.board]);
       return { ...state, board: board };
     case "MakeMove":
-      board = make_move([...state.board], action.piece.square);
-      const move_count = state.move_count + 1;
+      var PGN = [...state.PGN];
+      board = make_move([...state.board], action.piece.square, true, null, PGN);
+      var move_count = state.move_count + 1;
       var move = state.move === "w" ? "b" : "w";
-      var [game_over, game_over_by, winner] = check_over(board, move);
+      var [game_over, game_over_by, winner] = check_over(board, move, PGN);
       var promotion = false;
       var promotion_sq = null;
       if (action.piece.piece.toLowerCase() === "p") {
@@ -230,22 +237,31 @@ export function reducer(state, action) {
         winner,
         promotion,
         promotion_sq,
+        PGN,
       };
     case "ComputerMove":
       piece = action.piece;
-      var square = action.square;
+      let square = action.square;
       piece = { x: piece[0], y: piece[1] };
       square = { x: square[0], y: square[1] };
-      board = make_move([...state.board], square, true, piece);
+      PGN = [...state.PGN];
+      board = make_move([...state.board], square, true, piece, PGN);
       move = state.move === "w" ? "b" : "w";
-      [game_over, game_over_by, winner] = check_over(board, move);
-      if (action.promotion !== " ") {
+      [game_over, game_over_by, winner] = check_over(board, move, PGN);
+      if (action.promotion !== " " && action.promotion !== undefined) {
+        console.log(action.promotion);
         board[square.x][square.y].piece = action.promotion;
+        var last = PGN[PGN.length - 1];
+        console.log("promotion");
+        last = last + "=" + action.promotion.toUpperCase();
+        PGN[PGN.length - 1] = last;
+        [game_over, game_over_by, winner] = check_over(board, move, PGN);
       }
       return {
         ...state,
         evaluation: action.evaluation,
         mate_chance: action.mate_chance,
+        PGN,
         board,
         game_over,
         game_over_by,
@@ -272,9 +288,24 @@ export function reducer(state, action) {
     case "Promote":
       board = [...state.board];
       board[state.promotion_sq.x][state.promotion_sq.y].piece = action.piece;
+      PGN = state.PGN;
+      last = PGN[PGN.length - 1];
+      last = last + "=" + action.piece.toUpperCase();
+      PGN[PGN.length - 1] = last;
+      move = state.move;
+      [game_over, game_over_by, winner] = check_over(board, move, PGN);
       promotion = false;
       promotion_sq = null;
-      return { ...state, board, promotion, promotion_sq };
+      return {
+        ...state,
+        board,
+        promotion,
+        PGN,
+        promotion_sq,
+        game_over,
+        game_over_by,
+        winner,
+      };
 
     default:
       return state;

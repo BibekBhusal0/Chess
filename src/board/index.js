@@ -8,7 +8,7 @@ import Promotion from "./promotion";
 
 function Rank({ pieces }) {
   return (
-    <div className=" flex justify-center">
+    <div className="justify-center grid grid-cols-8">
       {pieces.map((piece, index) => (
         <Square key={index} piece={piece} />
       ))}

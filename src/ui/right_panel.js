@@ -1,5 +1,5 @@
 import { BoardContext } from "../App";
-import { useContext, useState } from "react";
+import { useContext, useEffect, useRef, useState } from "react";
 import { PiDeviceRotateFill } from "react-icons/pi";
 import { BiReset } from "react-icons/bi";
 
@@ -23,9 +23,29 @@ function ButtonWithIcon({ icon, text, onClick }) {
   );
 }
 
+function PlayedMoves({ PGN }) {
+  const ref = useRef(null);
+  useEffect(() => {
+    if (ref.current) {
+      ref.current.scrollTop = ref.current.scrollHeight;
+    }
+  });
+  return (
+    <div
+      ref={ref}
+      className="flex flex-wrap content-start justify-start h-52 overflow-auto">
+      {PGN.map((item, index) => (
+        <div className="basis-1/2 " key={index}>
+          {item}
+        </div>
+      ))}
+    </div>
+  );
+}
+
 function RightPanel() {
   const {
-    state: { move, user, game_over, game_over_by, winner },
+    state: { move, user, game_over, game_over_by, winner, PGN },
     dispatch,
   } = useContext(BoardContext);
   const padding = " lg:px-3 sm:px-20 px-3 ";
@@ -47,7 +67,7 @@ function RightPanel() {
       ? "bg-pink-50 text-gray-700 border-gray-700 hover:text-white hover:bg-gray-800 hover:border-transparent"
       : "text-white bg-gray-800 border-transparent hover:text-gray-900 hover:bg-white hover:border-gray-900 ";
   return (
-    <div className="lg:col-span-3 lg:border-l-8 border-t-8 border-t-gray-600 lg:border-t-0 col-span-5 text-center">
+    <div className="lg:col-span-3 lg:border-l-8 border-t-8 relative border-t-gray-600 lg:border-t-0 col-span-5 text-center">
       <div
         id="Basic settings and information"
         className={`border-b-4 py-4 ${padding}`}>
@@ -77,10 +97,9 @@ function RightPanel() {
           </div>
         </div>
       </div>
-      <div id="notations" className={`text-center  ${padding}`}>
-        <div className=" pb-60 text-2xl overflow-auto w-full">
-          <div className=" font-bold">Pice notations will be here</div>
-        </div>
+      <div id="notations" className={`text-center text-2xl w-full ${padding}`}>
+        <div>MOVES:</div>
+        <PlayedMoves PGN={PGN} />
       </div>
     </div>
   );
